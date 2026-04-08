@@ -3675,6 +3675,37 @@ function saveBilanHTML(){
       '</div></div>';
   });
 
+  // Données complètes du bilan
+  function rowData(l,v){ return v!=null&&v!==''?'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(168,84,112,0.07)"><span style="font-size:11px;color:#9A7880;min-width:140px">'+l+'</span><span style="font-size:12px;color:#2E1818;font-weight:500;text-align:right;flex:1">'+v+'</span></div>':''; }
+  var dureeLabels={recente:'< 3 mois',quelques:'3–6 mois',longue:'6 mois–1 an','tres-longue':'> 1 an'};
+  var nuitLabels={bien:'Non perturbé ✅',perturbe:'Perturbé 🌙',reveil:'Réveils nocturnes 😫',nocturne:'Douleur nocturne 🔴'};
+  var impactLabels={peu:'Peu d'impact',genant:'Gênant mais adapté',limite:'Limite vraiment',arret:'Ne peut presque plus rien'};
+  var progressLabels={mieux:'En amélioration 📈',stable:'Stable ➡',difficile:'Période difficile 📉'};
+  var kinesioLabels={0:'Peu présente',1:'Modérée',2:'Élevée',3:'Très élevée'};
+  var bisLabels={0:'Très bonne',1:'Bonne',2:'Variable',3:'Difficile'};
+
+  // Activités sélectionnées (multi-select)
+  var activitesLabel = tData.activityLabel || (tData.activity ? tData.activity : '');
+  var qdashScore = null;
+  if(tData.qdash){var qv=Object.values(tData.qdash).filter(function(v){return v!=null;});if(qv.length)qdashScore=Math.round(((qv.reduce(function(a,b){return a+b;},0)/qv.length-1)/4)*100);}
+  var pichotScore = null;
+  if(tData.pichot){var pv=Object.values(tData.pichot).filter(function(v){return v!=null;});if(pv.length)pichotScore=pv.reduce(function(a,b){return a+b;},0);}
+
+  var donneesHTML =
+    rowData('Douleur EVA', tData.eva!=null ? tData.eva+'/10' : null)+
+    rowData('Ce qui est difficile', activitesLabel)+
+    rowData('Objectif 4 semaines', tData.goal)+
+    rowData('Trajectoire perçue', progressLabels[tData.progress]||null)+
+    rowData('Durée des symptômes', dureeLabels[tData.duree]||null)+
+    rowData('Sommeil', nuitLabels[tData.nuit]||null)+
+    rowData('Impact quotidien', impactLabels[tData.impact]||null)+
+    rowData('Soutien', tData.soutienText||null)+
+    rowData('QuickDASH (bras)', qdashScore!==null ? qdashScore+'/100' : null)+
+    rowData('Fatigue Pichot', pichotScore!==null ? pichotScore+'/12' : null)+
+    rowData('Kinésiophobie', tData.kinesio!=null ? kinesioLabels[tData.kinesio] : null)+
+    rowData('Image corporelle', tData.bis!=null ? bisLabels[tData.bis] : null)+
+    rowData('Brides axillaires', tData.brides ? '⚠ Présentes' : null);
+
   var html = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">'+
     '<meta name="viewport" content="width=device-width,initial-scale=1">'+
     '<title>Bilan SEREINIA '+immat+'</title>'+
@@ -3739,6 +3770,8 @@ function saveBilanHTML(){
     '</div>'+
 
     (dimsHTML ? '<div class="section"><div class="section-label">Détail par dimension</div>'+dimsHTML+'</div>' : '')+
+
+    (donneesHTML ? '<div class="section"><div class="section-label">Données déclarées</div>'+donneesHTML+'</div>' : '')+
 
     '<div class="ia-section">'+
       '<div class="ia-label">SEREINIA · Par Marc Pezzali, MK-DE</div>'+
