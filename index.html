@@ -2180,7 +2180,7 @@ function buildBilanPrompt(kap){
     (bridesLabel ? 'Brides axillaires: '+bridesLabel+'\n' : '')+
     (d.traitement ? 'Traitements en cours: '+d.traitement+'\n' : '')+
     (d.soutienText ? 'Contexte/soutien: '+d.soutienText+'\n' : '')+'\n'+
-    'En tant que SEREINIA, commence par te présenter brièvement (1 phrase), puis explique ce bilan de façon humaine et personnalisée: ce que les chiffres signifient vraiment pour cette patiente, ce qui tire le score vers le bas et pourquoi c'est normal, ce que la kinésithérapie peut changer concrètement. Termine par une phrase d'ouverture invitant la patiente à continuer la conversation. Sois chaleureuse, directe, scientifique mais accessible. Utilise **gras** pour les points clés.';
+    'En tant que SEREINIA (cr\u00e9\u00e9e par Audelia et Marc, MK-DE), pr\u00e9sente-toi en 1 phrase. Explique ce bilan humainement: ce que le score signifie concr\u00e8tement, quelles dimensions tirent vers le bas et pourquoi c\'est normal, ce que la kin\u00e9 peut changer. Termine par une invitation \u00e0 continuer. Sois chaleureuse et scientifique. Utilise **gras**.'
 }
 
 async function openChatAfterBilan(kap){
@@ -2202,7 +2202,7 @@ async function openChatAfterBilan(kap){
 
   try{
     var prompt = buildBilanPrompt(kap);
-    var sysPrompt = 'Tu es SEREINIA, l'assistante du cabinet KAP créée par Audelia et Marc, MK-DE. Tu accompagnes les femmes en rééducation post-cancer du sein. Tu es chaleureuse, scientifique et directe. Tu ne fais jamais de diagnostic. Tu utilises **gras** pour les points importants. Format: paragraphes séparés par des sauts de ligne.';
+    var sysPrompt = 'Tu es SEREINIA, l\'assistante du cabinet KAP créée par Audelia et Marc, MK-DE. Tu accompagnes les femmes en rééducation post-cancer du sein. Tu es chaleureuse, scientifique et directe. Tu ne fais jamais de diagnostic. Tu utilises **gras** pour les points importants. Format: paragraphes séparés par des sauts de ligne.';
     var r = await fetch('https://gentle-poetry-2315.kinepezzali.workers.dev',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -2210,12 +2210,12 @@ async function openChatAfterBilan(kap){
     });
     var d = await r.json();
     rmTyp();
-    var rep = d.content?.[0]?.text || 'Je suis SEREINIA, l'assistante du cabinet KAP. Je suis là pour vous accompagner après votre bilan. Qu'est-ce qui vous préoccupe le plus en ce moment ?';
+    var rep = d.content?.[0]?.text || 'Je suis SEREINIA, l\'assistante du cabinet KAP. Je suis l\u00e0 pour vous accompagner apr\u00e8s votre bilan. Qu\'est-ce qui vous pr\u00e9occupe le plus en ce moment ?';
     hist = [{role:'assistant', content:rep}];
     addKap(rep);
   } catch(e){
     rmTyp();
-    addKap('Je suis SEREINIA, l'assistante du cabinet KAP créée par Audelia et Marc. Je rencontre une difficulté technique momentanée — n'hésitez pas à me réécrire. 🤝');
+    addKap('Je suis SEREINIA, l\'assistante du cabinet KAP cr\u00e9\u00e9e par Audelia et Marc. Je rencontre une difficult\u00e9 technique moment\u00e9\u00e9 — n\'h\u00e9sitez pas \u00e0 me r\u00e9\u00e9crire. 🤝');
   }
 }
 
