@@ -206,7 +206,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 @keyframes fadeUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 .mkap{display:flex;gap:10px;align-items:flex-start}
 .kav{width:34px;height:34px;background:linear-gradient(135deg,var(--rose-dark),var(--rose-deep));border-radius:11px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 3px 10px rgba(168,84,112,0.2)}
-.bk{background:var(--white);border:1px solid var(--border);border-radius:4px 17px 17px 17px;padding:14px 18px;max-width:80%;font-size:13.5px;line-height:1.74;color:var(--text);box-shadow:var(--sh)}
+.bk{background:var(--white);border:1px solid var(--border);border-radius:4px 20px 20px 20px;padding:18px 20px;max-width:85%;font-size:13.5px;line-height:1.85;color:var(--text);box-shadow:var(--sh)}
 .bk .sndr{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--rose-mid);margin-bottom:6px}
 .bk strong{color:var(--rose-dark);font-weight:500}
 .musr{display:flex;justify-content:flex-end}
@@ -2012,7 +2012,18 @@ function parse(txt){
   const clean=txt.replace(re,(_,icon,label,url)=>{res.push({icon:icon.trim(),label:label.trim(),url:url.trim()});return'';}).trim();
   return{clean,res};
 }
-function fmt(t){return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');}
+function fmt(t){
+  // Titres ## → section header
+  t = t.replace(/^##\s+(.+)$/gm,'<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#C9849A;margin:16px 0 6px;font-weight:500">$1</div>');
+  // Gras
+  t = t.replace(/\*\*(.+?)\*\*/g,'<strong style="color:#7A3350;font-weight:500">$1</strong>');
+  // Italique
+  t = t.replace(/\*([^*]+)\*/g,'<em style="color:#A08080">$1</em>');
+  // Double saut = nouveau paragraphe aéré
+  t = t.replace(/\n\n/g,'</p><p style="margin-top:10px">');
+  t = t.replace(/\n/g,'<br>');
+  return '<p style="margin:0">'+t+'</p>';
+}
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function scr(){document.getElementById('anc')?.scrollIntoView({behavior:'smooth'});}
 function enterSite(){
@@ -2180,7 +2191,7 @@ function buildBilanPrompt(kap){
     (bridesLabel ? 'Brides axillaires: '+bridesLabel+'\n' : '')+
     (d.traitement ? 'Traitements en cours: '+d.traitement+'\n' : '')+
     (d.soutienText ? 'Contexte/soutien: '+d.soutienText+'\n' : '')+'\n'+
-    'En tant que SEREINIA (cr\u00e9\u00e9e par Audelia et Marc, MK-DE), pr\u00e9sente-toi en 1 phrase. Explique ce bilan humainement: ce que le score signifie concr\u00e8tement, quelles dimensions tirent vers le bas et pourquoi c\'est normal, ce que la kin\u00e9 peut changer. Termine par une invitation \u00e0 continuer. Sois chaleureuse et scientifique. Utilise **gras**.'
+    'Réponds en français, structuré et aéré avec ces sections (utilise ## pour chaque titre):\n\n## Bonjour, je suis SEREINIA\n[1 phrase: créée par Audelia et Marc, MK-DE, cabinet KAP]\n\n## Votre score : ce qu\'il dit de vous\n[Explication humaine et concrète du score, sans jargon médical]\n\n## Ce que votre bilan révèle\n[Les dimensions clés, ce qui tire vers le bas, pourquoi c\'est normal après une chirurgie]\n\n## Ce que la rééducation peut changer\n[Concret, basé sur la recherche, sans promesse excessive]\n\n## Pour ce soir\n[1 seule action simple et précise, 2-3 minutes maximum]\n\nTermine par une phrase chaleureuse invitant à continuer la conversation. Paragraphes courts. **Gras** pour les points clés. Vouvoiement. Ton : clinicien bienveillant, jamais condescendant.'
 }
 
 async function openChatAfterBilan(kap){
