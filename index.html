@@ -3572,7 +3572,7 @@ function printKineDossier(){
   var bc = '#A85470';
 
   function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function fmt(t){return (t||'').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
+  function fmtPrint(t){return (t||'').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
   function bar(v,m,c){var p=m>0?Math.round(v/m*100):0;return '<div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:6px;background:#F0E0E6;border-radius:3px"><div style="width:'+p+'%;height:100%;background:'+c+';border-radius:3px"></div></div><span style="font-size:10px;color:#999;min-width:30px">'+v+'/'+m+'</span></div>';}
   function row(l,v){return v?'<tr><td style="padding:5px 8px 5px 0;font-size:11px;color:#7A5060;white-space:nowrap;vertical-align:top">'+l+'</td><td style="padding:5px 0;font-size:11.5px;color:#2E1818;font-weight:500">'+v+'</td></tr>':'';}
 
