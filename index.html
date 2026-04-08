@@ -2767,7 +2767,7 @@ function openChatAfterBilan(kap){
 
 <!-- RÉSULTAT BILAN -->
 <div id="trace-result" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(46,30,30,0.6);backdrop-filter:blur(10px);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;box-sizing:border-box">
-  <div style="background:#FAF0F2;border-radius:22px;width:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(100,40,60,0.2);padding-bottom:20px">
+  <div style="background:#FAF0F2;border-radius:22px;width:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(100,40,60,0.3);padding-bottom:24px;position:relative;z-index:1">
 
     <!-- Header -->
     <div style="padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(168,84,112,0.08)">
@@ -2809,13 +2809,12 @@ function openChatAfterBilan(kap){
       <div style="font-size:9.5px;color:#C0A0A0;margin-top:6px">Scannez avec votre téléphone</div>
     </div>
 
-    <!-- Boutons PDF / Kiné -->
-    <div class="tr-dl-bar" style="margin:0 20px 12px;border-top:none">
-      <button class="tr-dl-btn" onclick="downloadBilanPDF()">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 17 15 14"/></svg>
-        Télécharger mon bilan PDF
+    <!-- Bouton unique sauvegarde -->
+    <div style="margin:0 20px 12px">
+      <button onclick="saveBilanHTML()" style="width:100%;padding:13px;background:white;border:1.5px solid rgba(168,84,112,0.3);border-radius:14px;color:#A85470;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s" onmouseover="this.style.background='#FDF0F4'" onmouseout="this.style.background='white'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+        Sauvegarder mon bilan complet
       </button>
-      <button class="btn-kine-pro tr-dl-btn" onclick="printKineDossier()"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Kiné</button>
     </div>
 
     <!-- Boutons actions -->
@@ -3648,6 +3647,78 @@ function printKineDossier(){
     a.download = 'SEREINIA-Dossier-'+immat+'-'+new Date().toISOString().split('T')[0]+'.html';
     a.click();
   }
+}
+
+function saveBilanHTML(){
+  var kap = computeKAPScore();
+  var lbl = kapScoreLabel(kap.global);
+  var immat = (function(){var s=localStorage.getItem('kap-last-immat');return s||'—';})();
+  var date = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  var iaText = document.getElementById('tr-ia-text') ? document.getElementById('tr-ia-text').innerHTML : '';
+  var heroHTML = document.getElementById('tr-hero') ? document.getElementById('tr-hero').innerHTML : '';
+  var cardsHTML = document.getElementById('tr-cards') ? document.getElementById('tr-cards').innerHTML : '';
+  var sc = (kap.global||0)>=70?'#2E8B57':(kap.global||0)>=40?'#D97706':'#C04040';
+
+  var html = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Bilan SEREINIA '+immat+'</title>'+
+    '<meta name="viewport" content="width=device-width,initial-scale=1">'+
+    '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">'+
+    '<style>'+
+    '*{margin:0;padding:0;box-sizing:border-box}'+
+    'body{background:#F5EEF0;font-family:Jost,sans-serif;font-weight:300;padding:24px 16px;min-height:100vh}'+
+    '.card{background:#FAF0F2;border-radius:20px;padding:24px;max-width:560px;margin:0 auto;box-shadow:0 8px 32px rgba(100,40,60,0.12)}'+
+    '.header{text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(168,84,112,0.12)}'+
+    '.logo{font-family:"Cormorant Garamond",serif;font-size:2rem;font-weight:300;letter-spacing:0.3em;background:linear-gradient(135deg,#7A3350,#A85470,#C9849A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}'+
+    '.date{font-size:10px;color:#A08080;letter-spacing:1px;margin-top:4px}'+
+    '.section{background:white;border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid rgba(168,84,112,0.08)}'+
+    '.section-title{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:#C9849A;margin-bottom:12px}'+
+    '.score-num{font-family:"Cormorant Garamond",serif;font-size:64px;font-weight:300;color:'+sc+';line-height:1}'+
+    '.score-label{font-size:15px;font-weight:600;color:'+sc+';margin-top:4px}'+
+    '.score-desc{font-size:11px;color:#A08080;margin-top:3px}'+
+    '.bar-track{background:rgba(168,84,112,0.1);border-radius:4px;height:8px;margin-top:8px;overflow:hidden}'+
+    '.bar-fill{height:100%;background:linear-gradient(to right,'+sc+',rgba(168,84,112,0.4));border-radius:4px}'+
+    '.ia-block{background:#FDF0F2;border-radius:12px;padding:16px;font-size:13px;line-height:1.8;color:#2E1E1E}'+
+    '.ia-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#A85470;margin-bottom:8px}'+
+    '.immat-block{background:#A85470;border-radius:12px;padding:14px 18px;color:white;text-align:center;margin-top:14px}'+
+    '.immat-num{font-family:monospace;font-size:24px;font-weight:bold;letter-spacing:3px}'+
+    '.qr-block{text-align:center;margin-top:14px;padding-top:14px;border-top:1px solid rgba(168,84,112,0.1)}'+
+    '.footer{text-align:center;font-size:9px;color:#A08080;margin-top:16px;line-height:1.6}'+
+    'strong{font-weight:600}em{font-style:italic}'+
+    '</style></head><body>'+
+    '<div class="card">'+
+      '<div class="header">'+
+        '<div class="logo">SEREINIA</div>'+
+        '<div class="date">'+date+'</div>'+
+      '</div>'+
+      '<div class="section">'+
+        '<div class="section-title">KAP Score SEREINIA</div>'+
+        '<div class="score-num">'+(kap.global!==null?kap.global:'—')+'</div>'+
+        '<div class="score-label">'+lbl.label+'</div>'+
+        '<div class="score-desc">'+lbl.desc+'</div>'+
+        '<div class="bar-track"><div class="bar-fill" style="width:'+(kap.global||0)+'%"></div></div>'+
+      '</div>'+
+      '<div class="section">'+
+        '<div class="section-title">Message de SEREINIA</div>'+
+        '<div class="ia-block"><div class="ia-label">Par Marc Pezzali, MK-DE</div>'+iaText+'</div>'+
+      '</div>'+
+      '<div class="immat-block">'+
+        '<div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;opacity:.8;margin-bottom:4px">Votre numéro de bilan</div>'+
+        '<div class="immat-num">'+immat+'</div>'+
+        '<div style="font-size:10px;opacity:.7;margin-top:3px">À communiquer à votre kiné</div>'+
+      '</div>'+
+      '<div class="qr-block">'+
+        '<div style="font-size:10px;color:#A08080;margin-bottom:8px">Donnez votre avis — 1 minute pour améliorer KAP</div>'+
+        '<img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=2E1818&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSd0qJqbrQ1dJnGx-Wlnul4HtUxJADojvmgEBWxTz3Gc76BEOA%2Fviewform%3Fusp%3Dheader" style="width:140px;height:140px;border-radius:8px">'+
+        '<div style="font-size:9px;color:#C0A0A0;margin-top:5px">Scannez avec votre téléphone</div>'+
+      '</div>'+
+      '<div class="footer">KAP · SEREINIA · Kinésithérapie Oncologique<br>Cabinet KAP · Gagny (93) & Chessy (77)<br>Outil de préparation à la séance. Ne constitue pas un diagnostic médical.</div>'+
+    '</div>'+
+    '</body></html>';
+
+  var b = new Blob([html],{type:'text/html;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'SEREINIA-'+immat+'-'+new Date().toISOString().split('T')[0]+'.html';
+  a.click();
 }
 
 function closeResult(){
