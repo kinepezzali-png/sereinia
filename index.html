@@ -2818,7 +2818,7 @@ function openChatAfterBilan(kap){
     </div>
 
     <!-- Boutons actions -->
-    <div style="padding:4px 20px 8px;display:flex;gap:8px">
+    <div style="padding:4px 20px 20px;display:flex;gap:8px">
       <button onclick="resetTrace()" style="padding:9px 18px;border-radius:20px;border:1px solid rgba(168,84,112,0.2);background:transparent;color:#A08080;font-family:'Jost',sans-serif;font-size:12px;cursor:pointer">↺ Recommencer</button>
       <button onclick="var _kap=computeKAPScore();closeResult();openChatAfterBilan(_kap);" style="flex:1;padding:10px;border-radius:20px;background:#A85470;border:none;color:white;font-family:'Jost',sans-serif;font-size:13px;cursor:pointer">Continuer avec SEREINIA →</button>
     </div>
@@ -2897,9 +2897,10 @@ function toggleChip(el, type){
 }
 
 function selectProgress(el, val){
-  document.querySelectorAll('#progress-opts .tp-progress-opt').forEach(function(o){o.classList.remove('on');});
-  el.classList.add('on');
+  document.querySelectorAll('#progress-opts .tp-progress-opt').forEach(function(o){o.classList.remove('on','selected');});
+  el.classList.add('on','selected');
   tData.progress = val;
+  tUpdateNav();
 }
 
 function checkStep4(){
