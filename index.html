@@ -2766,9 +2766,10 @@ function openChatAfterBilan(kap){
 </div>
 
 <!-- RÉSULTAT BILAN -->
-<div id="trace-result" style="display:none;position:fixed;inset:0;z-index:99998;background:#F5EEF0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;box-sizing:border-box">
-  <div style="background:#FAF0F2;border-radius:22px;width:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(100,40,60,0.3);position:relative;z-index:1">
+<div id="trace-result" style="display:none;position:fixed;inset:0;z-index:99998;background:#F5EEF0;flex-direction:column;overflow:hidden">
+  <div style="background:#FAF0F2;width:100%;max-width:600px;margin:0 auto;display:flex;flex-direction:column;flex:1;overflow:hidden;box-shadow:none">
 
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
     <!-- Header -->
     <div style="padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(168,84,112,0.08)">
       <button onclick="closeResult()" style="width:28px;height:28px;border-radius:50%;background:#F5E2E2;border:none;cursor:pointer;font-size:14px;color:#A85470;display:flex;align-items:center;justify-content:center">←</button>
@@ -2838,8 +2839,9 @@ function openChatAfterBilan(kap){
       <div id="kine-rpt" style="display:none;overflow-y:auto;max-height:400px;padding:16px 18px"></div>
     </div>
 
+    </div>
     <!-- Boutons actions — DANS le conteneur -->
-    <div style="display:flex;gap:8px;padding:12px 20px 20px;background:#FAF0F2;border-radius:0 0 22px 22px">
+    <div style="display:flex;gap:8px;padding:12px 16px 24px;background:#FAF0F2;flex-shrink:0;border-top:1px solid rgba(168,84,112,0.1)">
       <button onclick="resetTrace()" style="padding:9px 18px;border-radius:20px;border:1px solid rgba(168,84,112,0.2);background:transparent;color:#A08080;font-family:'Jost',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap">↺ Recommencer</button>
       <button onclick="var _kap=computeKAPScore();closeResult();openChatAfterBilan(_kap);" style="flex:1;padding:10px;border-radius:20px;background:#A85470;border:none;color:white;font-family:'Jost',sans-serif;font-size:13px;cursor:pointer">Continuer avec SEREINIA →</button>
     </div>
@@ -3079,6 +3081,7 @@ function showTraceResult(){
   var result = document.getElementById('trace-result');
   if(!result) return;
   result.style.display = 'flex';
+  result.style.flexDirection = 'column';
   document.body.style.overflow = 'hidden';
   // Générer QR code avis
   setTimeout(function(){
