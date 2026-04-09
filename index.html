@@ -3080,7 +3080,7 @@ async function openChatAfterBilan(kap){
           onfocus="this.style.borderColor='#A85470';document.querySelectorAll('.prenom-card').forEach(function(c){c.classList.remove('selected');})"
           onblur="this.style.borderColor='rgba(168,84,112,0.25)'"
           onkeydown="if(event.key==='Enter')confirmPrenom()">
-        <button onclick="confirmPrenom()"
+        <button id="prenom-confirm-btn"
           style="padding:10px 20px;background:#A85470;border:none;border-radius:20px;color:white;font-family:Jost,sans-serif;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s"
           onmouseover="this.style.background='#8A3A58'" onmouseout="this.style.background='#A85470'">C'est mon prénom →</button>
       </div>
@@ -3476,6 +3476,7 @@ function showTraceResult(){
       var grid = document.getElementById('prenom-grid');
       var sel  = document.getElementById('prenom-selector');
       if(!grid || !sel){ console.error('[KAP] prenom-grid ou prenom-selector absent'); return; }
+
       var prenoms = [
         {nom:'Marie',      phrase:'A illuminé le monde malgré la douleur'},
         {nom:'Simone',     phrase:'A survécu et a tout reconstruit'},
@@ -3493,19 +3494,67 @@ function showTraceResult(){
         {nom:'Rigoberta',  phrase:'A témoigné pour celles qui n\'avaient plus de voix'},
         {nom:'Aung San',   phrase:'Est restée inébranlable malgré tout'}
       ];
+
+      var selectedNom = null;
+      var selectedPhrase = null;
+
       grid.innerHTML = prenoms.map(function(p){
-        return '<div class="prenom-card" onclick="selectPrenom(this,\'' + p.nom + '\',\'' + p.phrase.replace(/'/g,"\\'") + '\')">' +
+        return '<div class="prenom-card" data-nom="' + p.nom + '" data-phrase="' + p.phrase.replace(/"/g,'&quot;') + '">' +
           '<div class="prenom-card-name">' + p.nom + '</div>' +
           '<div class="prenom-card-phrase">' + p.phrase + '</div></div>';
       }).join('');
+
+      // Attacher les events via JS — pas de onclick inline
+      grid.querySelectorAll('.prenom-card').forEach(function(card){
+        card.addEventListener('click', function(){
+          grid.querySelectorAll('.prenom-card').forEach(function(c){ c.classList.remove('selected'); });
+          card.classList.add('selected');
+          selectedNom = card.dataset.nom;
+          selectedPhrase = card.dataset.phrase;
+          var custom = document.getElementById('prenom-custom');
+          if(custom) custom.value = '';
+        });
+      });
+
+      // Bouton confirmer
+      var btn = document.getElementById('prenom-confirm-btn');
+      if(btn){
+        btn.onclick = function(){
+          var custom = document.getElementById('prenom-custom');
+          var nom = (custom && custom.value.trim()) ? custom.value.trim() : selectedNom;
+          var phrase = (!custom || !custom.value.trim()) && selectedPhrase ? selectedPhrase : 'Votre prénom est votre plus grande force.';
+          if(!nom){ if(custom) custom.focus(); return; }
+          localStorage.setItem('kap-ser-prenom', nom);
+          localStorage.setItem('kap-ser-prenom-phrase', phrase);
+          if(_currentImmat) localStorage.setItem('kap-last-immat', _currentImmat);
+          sel.style.display = 'none';
+          var dateStr = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+          var pd = document.getElementById('prenom-display');
+          var dd = document.getElementById('prenom-date-display');
+          var phd = document.getElementById('prenom-phrase-display');
+          if(pd) pd.textContent = nom;
+          if(dd) dd.textContent = dateStr;
+          if(phd) phd.textContent = phrase;
+          var immatReveal = document.querySelector('.immat-reveal');
+          if(immatReveal) immatReveal.style.display = 'block';
+          setTimeout(function(){
+            var sc = document.getElementById('tr-scroll');
+            if(sc) sc.scrollTop = sc.scrollHeight;
+          }, 100);
+          setTimeout(function(){
+            var kap = computeKAPScore();
+            closeResult();
+            openChatAfterBilan(kap);
+          }, 1800);
+        };
+      }
+
       _currentImmat = _immat;
-      _selectedPrenom = null;
       sel.style.display = 'block';
       setTimeout(function(){
         var sc = document.getElementById('tr-scroll');
         if(sc) sc.scrollTop = sc.scrollHeight;
       }, 150);
-      console.log('[KAP] sélecteur prénom affiché');
     }, 1400);
   } catch(e){ console.error('[KAP] immat error:', e); }
 }
