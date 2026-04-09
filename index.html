@@ -2013,19 +2013,20 @@ function parse(txt){
   return{clean,res};
 }
 function fmt(t){
-  // Normaliser les sauts de ligne
-  t = (t||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
-  // Gras D'ABORD pour ne pas interférer avec les titres
+  t = (t||'');
+  // ## peut apparaître n'importe où — après \n, — , ou en début
+  t = t.replace(/(?:^|\n|—\s*)##\s*([^\n#—]+)/g, function(m, title){
+    return '<div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#C9849A;margin:18px 0 5px;font-weight:600;border-bottom:1px solid rgba(168,84,112,0.15);padding-bottom:4px">' + title.trim() + '</div><p style="margin:6px 0 0">';
+  });
+  // Gras
   t = t.replace(/\*\*(.+?)\*\*/g,'<strong style="color:#7A3350;font-weight:600">$1</strong>');
   // Italique
   t = t.replace(/\*([^*]+)\*/g,'<em style="color:#A08080">$1</em>');
-  // Titres ## — fonctionne après ou sans saut de ligne
-  t = t.replace(/(^|\n)##\s*([^\n]+)/g, function(m, pre, title){
-    return (pre==='\n'?'<br>':'')+'<div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#C9849A;margin:18px 0 6px;font-weight:600;border-bottom:1px solid rgba(168,84,112,0.15);padding-bottom:4px">'+title.trim()+'</div>';
-  });
   // Paragraphes
   t = t.replace(/\n\n/g,'</p><p style="margin:10px 0 0">');
   t = t.replace(/\n/g,'<br>');
+  // Tirets — séparateurs → saut visuel (si pas déjà traités par ##)
+  t = t.replace(/\s+—\s+/g,' <span style="color:rgba(168,84,112,0.3)">—</span> ');
   return '<p style="margin:0;line-height:1.85">'+t+'</p>';
 }
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
