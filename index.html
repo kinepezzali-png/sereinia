@@ -2014,20 +2014,11 @@ function parse(txt){
 }
 function fmt(t){
   t = (t||'');
-  // ## peut apparaître n'importe où — après \n, — , ou en début
-  t = t.replace(/(?:^|\n|—\s*)##\s*([^\n#—]+)/g, function(m, title){
-    return '<div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#C9849A;margin:18px 0 5px;font-weight:600;border-bottom:1px solid rgba(168,84,112,0.15);padding-bottom:4px">' + title.trim() + '</div><p style="margin:6px 0 0">';
-  });
-  // Gras
   t = t.replace(/\*\*(.+?)\*\*/g,'<strong style="color:#7A3350;font-weight:600">$1</strong>');
-  // Italique
   t = t.replace(/\*([^*]+)\*/g,'<em style="color:#A08080">$1</em>');
-  // Paragraphes
-  t = t.replace(/\n\n/g,'</p><p style="margin:10px 0 0">');
+  t = t.replace(/\n\n/g,'</p><p style="margin:8px 0 0">');
   t = t.replace(/\n/g,'<br>');
-  // Tirets — séparateurs → saut visuel (si pas déjà traités par ##)
-  t = t.replace(/\s+—\s+/g,' <span style="color:rgba(168,84,112,0.3)">—</span> ');
-  return '<p style="margin:0;line-height:1.85">'+t+'</p>';
+  return '<p style="margin:0;line-height:1.82">'+t+'</p>';
 }
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function scr(){document.getElementById('anc')?.scrollIntoView({behavior:'smooth'});}
@@ -2159,6 +2150,69 @@ function openChatDirect(){
   startWithSit(sit);
 }
 
+function renderSereniaAnalyse(data){
+  var msgs = document.getElementById('msgs');
+  if(!msgs) return;
+
+  var html = '<div style="margin:4px 0 8px">' +
+    // En-tête équipe KAP
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">' +
+      '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7A3350,#A85470);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🤝</div>' +
+      '<div>' +
+        '<div style="font-size:11px;font-weight:600;color:#2E1E1E">SEREINIA</div>' +
+        '<div style="font-size:9.5px;color:#A08080;line-height:1.4">Analyse construite par une équipe de kinésithérapeutes D.E.<br>Cabinet KAP · Pas un diagnostic médical</div>' +
+      '</div>' +
+    '</div>' +
+
+    // Intro
+    '<div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(168,84,112,0.1)">' +
+      '<div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#C9849A;margin-bottom:8px;font-weight:600">Ce que votre bilan dit de vous</div>' +
+      '<div style="font-size:13px;line-height:1.75;color:#2E1E1E">' + (data.intro||'') + '</div>' +
+    '</div>' +
+
+    // Points d'observation
+    '<div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(168,84,112,0.1)">' +
+      '<div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#C9849A;margin-bottom:10px;font-weight:600">Ce qui ressort le plus</div>' +
+      (data.points||[]).map(function(p){
+        return '<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px">' +
+          '<div style="width:5px;height:5px;border-radius:50%;background:#C9849A;flex-shrink:0;margin-top:7px"></div>' +
+          '<div style="font-size:13px;line-height:1.7;color:#2E1E1E">' + p + '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>' +
+
+    // Ce que la kiné peut changer
+    '<div style="background:#FDF0F4;border-radius:12px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(168,84,112,0.12)">' +
+      '<div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#C9849A;margin-bottom:8px;font-weight:600">Ce que la rééducation peut changer</div>' +
+      '<div style="font-size:13px;line-height:1.75;color:#2E1E1E">' + (data.kine||'') + '</div>' +
+    '</div>' +
+
+    // Pour ce soir
+    '<div style="background:linear-gradient(135deg,#7A3350,#A85470);border-radius:12px;padding:14px 16px;margin-bottom:10px">' +
+      '<div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:8px;font-weight:600">Pour ce soir</div>' +
+      '<div style="font-size:13px;line-height:1.75;color:white">' + (data.soir||'') + '</div>' +
+    '</div>' +
+
+    // Question d'ouverture
+    '<div style="background:white;border-radius:12px;padding:14px 16px;border:1.5px solid rgba(168,84,112,0.2)">' +
+      '<div style="font-size:13px;line-height:1.75;color:#2E1E1E;font-style:italic">' + (data.ouverture||'') + '</div>' +
+    '</div>' +
+
+  '</div>';
+
+  var row = document.createElement('div');
+  row.className = 'mrow';
+  row.innerHTML = html;
+  msgs.appendChild(row);
+
+  // Scroll
+  var anc = document.getElementById('anc');
+  if(anc) anc.scrollIntoView({behavior:'smooth'});
+
+  // Ajouter dans hist pour que la conversation continue
+  hist = [{role:'assistant', content: JSON.stringify(data)}];
+}
+
 function showBilanFromChat(){
   var r = document.getElementById('trace-result');
   if(r){ r.style.display='flex'; r.style.flexDirection='column'; document.body.style.overflow='hidden'; }
@@ -2218,7 +2272,7 @@ async function openChatAfterBilan(kap){
 
   try{
     var prompt = buildBilanPrompt(kap);
-    var sysPrompt = 'Tu es SEREINIA, l\'assistante du cabinet KAP créée par Audelia et Marc, MK-DE. Tu accompagnes les femmes en rééducation post-cancer du sein. Tu es chaleureuse, scientifique et directe. Tu ne fais jamais de diagnostic. Tu utilises **gras** pour les points importants. Format: paragraphes séparés par des sauts de ligne.';
+    var sysPrompt = 'Tu es SEREINIA, cr\u00e9\u00e9e par une \u00e9quipe de masseurs-kin\u00e9sith\u00e9rapeutes D.E. du cabinet KAP. Tu retournes UNIQUEMENT un objet JSON valide, sans aucun texte avant ou apr\u00e8s, sans markdown, sans backticks. Format exact: {"intro":"...","points":["...","...","..."],"kine":"...","soir":"...","ouverture":"..."}. intro: 2 phrases max sur ce que le score signifie humainement. points: 3 observations pr\u00e9cises bas\u00e9es sur les donn\u00e9es (EVA, dimensions, objectif). kine: 2 phrases sur ce que la kin\u00e9sith\u00e9rapie peut changer concr\u00e8tement. soir: 1 action simple et pr\u00e9cise pour ce soir. ouverture: 1 question chaleureuse pour inviter la patiente \u00e0 s\'exprimer. Vouvoiement. Ton clinicien bienveillant.';
     var r = await fetch('https://gentle-poetry-2315.kinepezzali.workers.dev',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -2228,7 +2282,15 @@ async function openChatAfterBilan(kap){
     rmTyp();
     var rep = d.content?.[0]?.text || 'Je suis SEREINIA, l\'assistante du cabinet KAP. Je suis l\u00e0 pour vous accompagner apr\u00e8s votre bilan. Qu\'est-ce qui vous pr\u00e9occupe le plus en ce moment ?';
     hist = [{role:'assistant', content:rep}];
-    addKap(rep);
+    // Tenter de parser le JSON de l'IA
+    try {
+      var clean = rep.replace(/```json|```/g,'').trim();
+      var data = JSON.parse(clean);
+      renderSereniaAnalyse(data);
+    } catch(e) {
+      // Fallback texte brut si JSON invalide
+      addKap(rep);
+    }
   } catch(e){
     rmTyp();
     addKap('Je suis SEREINIA, l\'assistante du cabinet KAP cr\u00e9\u00e9e par Audelia et Marc. Je rencontre une difficult\u00e9 technique moment\u00e9\u00e9 — n\'h\u00e9sitez pas \u00e0 me r\u00e9\u00e9crire. 🤝');
