@@ -3465,14 +3465,49 @@ function showTraceResult(){
 
   generateSereiniaResponse(kap);
 
-  // ── Générer immat + déclencher sélecteur prénom ──
-  var _immat = generateImmat();
-  saveBilanToProto(_immat);
-  localStorage.setItem('kap-last-immat', _immat);
-  var numDisplay = document.getElementById('immat-display');
-  if(numDisplay) numDisplay.textContent = _immat;
-  // Afficher le sélecteur avec délai (après que l'analyse IA soit visible)
-  setTimeout(function(){ showPrenomSelector(_immat); }, 800);
+  // ── Immat + sélecteur prénom ──
+  try {
+    var _immat = generateImmat();
+    try { saveBilanToProto(_immat); } catch(e2){ console.warn('saveBilanToProto:', e2); }
+    localStorage.setItem('kap-last-immat', _immat);
+    var numDisplay = document.getElementById('immat-display');
+    if(numDisplay) numDisplay.textContent = _immat;
+    setTimeout(function(){
+      var grid = document.getElementById('prenom-grid');
+      var sel  = document.getElementById('prenom-selector');
+      if(!grid || !sel){ console.error('[KAP] prenom-grid ou prenom-selector absent'); return; }
+      var prenoms = [
+        {nom:'Marie',      phrase:'A illuminé le monde malgré la douleur'},
+        {nom:'Simone',     phrase:'A survécu et a tout reconstruit'},
+        {nom:'Rosa',       phrase:'A tenu debout quand tout disait de céder'},
+        {nom:'Frida',      phrase:'A peint sa douleur en beauté'},
+        {nom:'Malala',     phrase:'A continué à parler après l\'impossible'},
+        {nom:'Amelia',     phrase:'A traversé ce qu\'on disait impossible'},
+        {nom:'Toni',       phrase:'A mis des mots sur l\'indicible'},
+        {nom:'Wangari',    phrase:'A planté la vie quand tout brûlait'},
+        {nom:'Valentina',  phrase:'A ouvert des portes jamais franchies'},
+        {nom:'Harriet',    phrase:'A libéré en risquant tout'},
+        {nom:'Nadia',      phrase:'A trouvé la perfection dans l\'adversité'},
+        {nom:'Chimamanda', phrase:'A nommé ce qu\'on n\'osait pas dire'},
+        {nom:'Christiane', phrase:'A tenu debout quand la salle sifflait'},
+        {nom:'Rigoberta',  phrase:'A témoigné pour celles qui n\'avaient plus de voix'},
+        {nom:'Aung San',   phrase:'Est restée inébranlable malgré tout'}
+      ];
+      grid.innerHTML = prenoms.map(function(p){
+        return '<div class="prenom-card" onclick="selectPrenom(this,\'' + p.nom + '\',\'' + p.phrase.replace(/'/g,"\\'") + '\')">' +
+          '<div class="prenom-card-name">' + p.nom + '</div>' +
+          '<div class="prenom-card-phrase">' + p.phrase + '</div></div>';
+      }).join('');
+      _currentImmat = _immat;
+      _selectedPrenom = null;
+      sel.style.display = 'block';
+      setTimeout(function(){
+        var sc = document.getElementById('tr-scroll');
+        if(sc) sc.scrollTop = sc.scrollHeight;
+      }, 150);
+      console.log('[KAP] sélecteur prénom affiché');
+    }, 1400);
+  } catch(e){ console.error('[KAP] immat error:', e); }
 }
 
 
@@ -3816,24 +3851,27 @@ var _selectedPrenom = null;
 var _currentImmat = null;
 
 function showPrenomSelector(immat){
+  console.log('[KAP] showPrenomSelector start, immat=', immat);
   _currentImmat = immat;
   _selectedPrenom = null;
   var grid = document.getElementById('prenom-grid');
-  if(!grid) return;
+  if(!grid){ console.error('[KAP] prenom-grid not found'); return; }
   grid.innerHTML = PRENOMS_PARCOURS.map(function(p){
-    return `<div class="prenom-card" onclick="selectPrenom(this,'${p.nom}','${p.phrase}')">
-      <div class="prenom-card-name">${p.nom}</div>
-      <div class="prenom-card-phrase">${p.phrase}</div>
-    </div>`;
+    return '<div class="prenom-card" onclick="selectPrenom(this,\'' + p.nom + '\',\'' + p.phrase.replace(/'/g,"\\'") + '\')">' +
+      '<div class="prenom-card-name">' + p.nom + '</div>' +
+      '<div class="prenom-card-phrase">' + p.phrase + '</div>' +
+    '</div>';
   }).join('');
   var sel = document.getElementById('prenom-selector');
   if(sel){
     sel.style.display = 'block';
+    console.log('[KAP] prenom-selector shown');
     setTimeout(function(){
       var sc = document.getElementById('tr-scroll');
-      if(sc) sc.scrollTop = sc.scrollHeight;
+      if(sc){ sc.scrollTop = sc.scrollHeight; console.log('[KAP] scrolled'); }
+      else console.warn('[KAP] tr-scroll not found');
     }, 100);
-  }
+  } else { console.error('[KAP] prenom-selector not found'); }
 }
 
 function selectPrenom(el, nom, phrase){
