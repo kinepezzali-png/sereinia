@@ -591,6 +591,12 @@ textarea::placeholder{color:var(--text-s)}
 .tp-btn-next:hover{background:#7A3350;transform:translateY(-1px)}
 .tp-btn-next:disabled{opacity:.35;pointer-events:none;transform:none}
 #trace-result{display:none;position:relative;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.prenom-welcome-block{animation:slideUp .5s cubic-bezier(.4,0,.2,1) both}
+#prenom-selector{animation:fadeIn .3s ease both}
+.prenom-card{transition:all .18s cubic-bezier(.4,0,.2,1)}
+#chat-transition-overlay{position:fixed;inset:0;background:#A85470;z-index:99999;opacity:0;pointer-events:none;transition:opacity .6s ease}
 .tr-header{padding:20px 24px 16px;border-bottom:1px solid rgba(168,84,112,0.11);display:flex;align-items:center;gap:12px}
 .tr-icon{width:40px;height:40px;background:linear-gradient(135deg,#7A3350,#A85470);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
 .tr-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:#2E1E1E}
@@ -1045,6 +1051,7 @@ textarea::placeholder{color:var(--text-s)}
 </style>
 </head>
 <body>
+<div id="chat-transition-overlay"></div>
 
 <div id="scene-b">
   <div class="sc-circle-wrap">
@@ -3087,20 +3094,27 @@ async function openChatAfterBilan(kap){
     </div>
 
     <!-- Bienvenue — affiché après choix prénom -->
-    <div class="immat-reveal" style="display:none;padding:10px 20px;background:white">
-      <div style="background:#A85470;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:10px">
-        <div style="text-align:center">
-          <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:6px">Bienvenue</div>
-          <div id="prenom-display" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:white;letter-spacing:2px;margin-bottom:2px">—</div>
-          <div id="prenom-date-display" style="font-size:11px;color:rgba(255,255,255,.65)"></div>
-          <div id="prenom-phrase-display" style="font-size:11.5px;color:rgba(255,255,255,.8);font-style:italic;margin-top:6px;line-height:1.55"></div>
+    <div class="immat-reveal" style="display:none;padding:16px 20px 20px;background:white">
+      <div style="background:linear-gradient(135deg,#7A3350 0%,#A85470 60%,#C9849A 100%);border-radius:16px;padding:24px 20px;text-align:center">
+        <div style="font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:10px">Bienvenue</div>
+        <div id="prenom-display" style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;color:white;letter-spacing:2px;line-height:1.1">—</div>
+        <div id="prenom-date-display" style="font-size:11px;color:rgba(255,255,255,.6);margin-top:4px;letter-spacing:1px"></div>
+        <div style="height:1px;background:rgba(255,255,255,.15);margin:14px 20px"></div>
+        <div id="prenom-phrase-display" style="font-size:13px;color:rgba(255,255,255,.85);font-style:italic;line-height:1.65;padding:0 8px"></div>
+        <div style="margin-top:14px;background:rgba(255,255,255,0.12);border-radius:10px;padding:9px 14px;font-size:10.5px;color:rgba(255,255,255,.65)">
+          Référence kiné : <span id="immat-display" style="font-family:monospace;font-weight:600;letter-spacing:1px;color:rgba(255,255,255,.85)">—</span>
         </div>
-        <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;font-size:10px;color:rgba(255,255,255,.6);display:flex;justify-content:space-between;align-items:center">
-          <span style="letter-spacing:1px;text-transform:uppercase;font-size:8.5px">Référence kiné</span>
-          <span id="immat-display" style="font-family:monospace;font-weight:600;letter-spacing:2px">—</span>
-        </div>
-        <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;font-size:11px;color:rgba(255,255,255,.8);line-height:1.6">
-          💡 Retrouvez votre bilan depuis cet appareil en saisissant votre référence sur la page d'accueil.
+      </div>
+      <div style="margin-top:16px;text-align:center">
+        <div style="font-size:12px;color:#A08080;margin-bottom:14px;line-height:1.7">Votre bilan est prêt. SEREINIA vous attend<br>pour continuer à votre rythme.</div>
+        <button id="btn-open-chat-prenom"
+          style="width:100%;padding:16px;background:#A85470;border:none;border-radius:14px;color:white;font-family:'Jost',sans-serif;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:.3px;box-shadow:0 6px 20px rgba(168,84,112,0.28);transition:all .22s"
+          onmouseover="this.style.background='#8A3A58';this.style.transform='translateY(-1px)'"
+          onmouseout="this.style.background='#A85470';this.style.transform='translateY(0)'">
+          Continuer avec SEREINIA →
+        </button>
+        <div style="font-size:10px;color:#C0A0A0;margin-top:12px;line-height:1.6">
+          💡 Retrouvez ce bilan depuis cet appareil<br>en saisissant votre référence sur la page d'accueil.
         </div>
       </div>
     </div>
@@ -3524,28 +3538,55 @@ function showTraceResult(){
           var nom = (custom && custom.value.trim()) ? custom.value.trim() : selectedNom;
           var phrase = (!custom || !custom.value.trim()) && selectedPhrase ? selectedPhrase : 'Votre prénom est votre plus grande force.';
           if(!nom){ if(custom) custom.focus(); return; }
+
           localStorage.setItem('kap-ser-prenom', nom);
           localStorage.setItem('kap-ser-prenom-phrase', phrase);
           if(_currentImmat) localStorage.setItem('kap-last-immat', _currentImmat);
+
           sel.style.display = 'none';
+
           var dateStr = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
-          var pd = document.getElementById('prenom-display');
-          var dd = document.getElementById('prenom-date-display');
+          var pd  = document.getElementById('prenom-display');
+          var dd  = document.getElementById('prenom-date-display');
           var phd = document.getElementById('prenom-phrase-display');
-          if(pd) pd.textContent = nom;
-          if(dd) dd.textContent = dateStr;
+          var imd = document.getElementById('immat-display');
+          if(pd)  pd.textContent  = nom;
+          if(dd)  dd.textContent  = dateStr;
           if(phd) phd.textContent = phrase;
-          var immatReveal = document.querySelector('.immat-reveal');
-          if(immatReveal) immatReveal.style.display = 'block';
+          if(imd) imd.textContent = _currentImmat || '—';
+
+          var welcome = document.querySelector('.immat-reveal');
+          if(welcome) welcome.style.display = 'block';
+
           setTimeout(function(){
             var sc = document.getElementById('tr-scroll');
             if(sc) sc.scrollTop = sc.scrollHeight;
-          }, 100);
-          setTimeout(function(){
-            var kap = computeKAPScore();
-            closeResult();
-            openChatAfterBilan(kap);
-          }, 1800);
+          }, 120);
+
+          // Brancher le bouton CTA — patiente décide quand elle est prête
+          var btnChat = document.getElementById('btn-open-chat-prenom');
+          if(btnChat){
+            btnChat.onclick = function(){
+              var overlay = document.getElementById('chat-transition-overlay');
+              if(overlay){
+                overlay.style.pointerEvents = 'all';
+                overlay.style.opacity = '1';
+                setTimeout(function(){
+                  var kap = computeKAPScore();
+                  closeResult();
+                  openChatAfterBilan(kap);
+                  setTimeout(function(){
+                    overlay.style.opacity = '0';
+                    setTimeout(function(){ overlay.style.pointerEvents = 'none'; }, 600);
+                  }, 400);
+                }, 500);
+              } else {
+                var kap = computeKAPScore();
+                closeResult();
+                openChatAfterBilan(kap);
+              }
+            };
+          }
         };
       }
 
