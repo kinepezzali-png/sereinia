@@ -1987,7 +1987,8 @@ RECHERCHE ACTIVE — WEB SEARCH
 Si une question porte sur un traitement, un protocole ou une recommandation récente en oncologie du sein : utiliser web_search pour vérifier si une publication récente (< 2 ans) modifie les recommandations. Citer la source avec auteur + année. Sinon, s'appuyer sur les références fondamentales ci-dessous.
 
 Situation actuelle de la patiente : ${sit}
-${getBilanRankSer()>1?`CONTEXTE PARCOURS : C'est le ${getBilanRankSer()}ème bilan de cette patiente. Elle revient mesurer sa progression. Reconnaître cet engagement, s'appuyer sur l'historique.`:`Premier contact — construire la relation avant tout.`}`;
+${(function(){try{var r=typeof getBilanRankSer==='function'?getBilanRankSer():0;return r>1?'CONTEXTE PARCOURS : C\'est le '+r+'ème bilan de cette patiente. Elle revient mesurer sa progression. Reconnaître cet engagement, s\'appuyer sur l\'historique.':'Premier contact — construire la relation avant tout.';}catch(e){return '';}})()}`;
+};
 
 function openChat(){
   document.getElementById('overlay').classList.add('open');
@@ -2392,7 +2393,9 @@ async function openChatAfterBilan(kap){
     var prompt = buildBilanPrompt(kap);
   var prenomParcours = localStorage.getItem('kap-ser-prenom') || null;
   var prenomPhrase = localStorage.getItem('kap-ser-prenom-phrase') || null;
-  var sysPrompt = `Tu es SEREINIA, créée par une équipe de masseurs-kinésithérapeutes D.E. du cabinet KAP. Tu retournes UNIQUEMENT un objet JSON valide, sans aucun texte avant ou après, sans markdown, sans backticks. Format exact: {"intro":"...","points":["...","...","..."],"kine":"...","soir":"...","ouverture":"..."}. intro: 2 phrases max sur ce que le score signifie humainement${prenomParcours?` — adresse-toi à elle par son prénom de parcours "${prenomParcours}"`:''}. points: 3 observations précises basées sur les données (EVA, dimensions, objectif). kine: 2 phrases sur ce que la kinésithérapie peut changer concrètement. soir: 1 action simple et précise pour ce soir. ouverture: 1 question chaleureuse pour inviter la patiente à s'exprimer${prenomParcours?`, en l'appelant par son prénom "${prenomParcours}"`:''}. Vouvoiement. Ton clinicien bienveillant.`;
+  var _prenomCtx1 = prenomParcours ? ' — adresse-toi à elle par son prénom de parcours "'+prenomParcours+'"' : '';
+  var _prenomCtx2 = prenomParcours ? ', en l\'appelant par son prénom "'+prenomParcours+'"' : '';
+  var sysPrompt = 'Tu es SEREINIA, créée par une équipe de masseurs-kinésithérapeutes D.E. du cabinet KAP. Tu retournes UNIQUEMENT un objet JSON valide, sans aucun texte avant ou après, sans markdown, sans backticks. Format exact: {"intro":"...","points":["...","...","..."],"kine":"...","soir":"...","ouverture":"..."}. intro: 2 phrases max sur ce que le score signifie humainement'+_prenomCtx1+'. points: 3 observations précises basées sur les données (EVA, dimensions, objectif). kine: 2 phrases sur ce que la kinésithérapie peut changer concrètement. soir: 1 action simple et précise pour ce soir. ouverture: 1 question chaleureuse pour inviter la patiente à s\'exprimer'+_prenomCtx2+'. Vouvoiement. Ton clinicien bienveillant.';
     var r = await fetch('https://gentle-poetry-2315.kinepezzali.workers.dev',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -4591,13 +4594,7 @@ function renderKineReport(){
   var recoHtml='<ol style="margin:0;padding-left:16px">'+recos.map(r=>`<li style="font-size:11.5px;color:#2E1818;line-height:1.6;margin-bottom:5px">${r}</li>`).join('')+'</ol><div style="font-size:10px;color:#AAA;margin-top:8px">À adapter selon l\'examen clinique et le protocole oncologique.</div>';
   var recoSec=sec('💡','Recommandations · Séance 1',recoHtml);
 
-  var footer='<div style="margin-top:14px;padding-top:10px;border-top:1px solid rgba(168,84,112,.1);font-size:10px;color:#AAA;text-align:center;line-height:1.6">KAP · SEREINIA · Kinésithérapie Oncologique · Gagny (93) & Chessy (77)<br>Outil de préparation à la séance. Ne constitue pas un diagnostic médical.</div><div style="margin-top:14px;padding:12px 8px;border-top:1px solid #EEE;text-align:center">
-  <div style="font-size:10.5px;color:#666;font-weight:500;margin-bottom:8px">Donnez votre avis — 1 minute pour améliorer KAP</div>
-  <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&color=2E1818&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSd0qJqbrQ1dJnGx-Wlnul4HtUxJADojvmgEBWxTz3Gc76BEOA%2Fviewform%3Fusp%3Dheader" alt="QR code avis KAP" style="width:120px;height:120px;border-radius:6px;display:block;margin:0 auto">
-  <div style="font-size:9.5px;color:#BBB;margin-top:6px">Scannez avec votre téléphone</div>
-  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js\"><\/script>
-  <script>setTimeout(function(){if(typeof QRCode!==\"undefined\"&&document.getElementById(\"kap-qr-avis\")&&!document.getElementById(\"kap-qr-avis\").children.length){new QRCode(document.getElementById(\"kap-qr-avis\"),{text:\"https://docs.google.com/forms/d/e/1FAIpQLSd0qJqbrQ1dJnGx-Wlnul4HtUxJADojvmgEBWxTz3Gc76BEOA/viewform?usp=header\",width:130,height:130,colorDark:\"#1A1208\",colorLight:\"#ffffff\",correctLevel:QRCode.CorrectLevel.H});}},300);<\/script>
-</div>';
+  var footer='<div style="margin-top:14px;padding-top:10px;border-top:1px solid rgba(168,84,112,.1);font-size:10px;color:#AAA;text-align:center;line-height:1.6">KAP · SEREINIA · Kinésithérapie Oncologique · Gagny (93) &amp; Chessy (77)<br>Outil de préparation à la séance. Ne constitue pas un diagnostic médical.</div><div style="margin-top:14px;padding:12px 8px;border-top:1px solid #EEE;text-align:center"><div style="font-size:10.5px;color:#666;font-weight:500;margin-bottom:8px">Donnez votre avis — 1 minute pour améliorer KAP</div><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&color=2E1818&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSd0qJqbrQ1dJnGx-Wlnul4HtUxJADojvmgEBWxTz3Gc76BEOA%2Fviewform%3Fusp%3Dheader" alt="QR code avis KAP" style="width:120px;height:120px;border-radius:6px;display:block;margin:0 auto"><div style="font-size:9.5px;color:#BBB;margin-top:6px">Scannez avec votre téléphone</div></div>';
   el.innerHTML=header+ctxSec+scoresSec+dimsSec+flagsSec+recoSec+footer;
 }
 // ══ HISTORIQUE BILANS SEREINIA — Boucle de Marc ══
@@ -4667,13 +4664,9 @@ function openChatWithSavedBilanSer(bilan){
   }
 
   var prenomParcours = localStorage.getItem('kap-ser-prenom') || null;
-  var sysRetrieve=`Tu es SEREINIA, assistante du cabinet KAP (Kinésithérapie · Activité · Prévention), créée par Marc Pezzali, MK-DE, spécialisée accompagnement post-cancer du sein.
-La patiente revient sur son bilan du ${dateStr}.${prenomParcours?` Son prénom de parcours est "${prenomParcours}" — utilise-le avec chaleur.`:''} Données enregistrées :
-Score KAP global : ${score}/100
-EVA : ${eva}/10
-${diffTxt}
-
-INSTRUCTION : Accueille ce retour avec chaleur et douceur.${prenomParcours?` Commence par "Bonjour ${prenomParcours}".`:''} En une ou deux phrases, rappelle-lui son score et ce qu'il dit d'elle — pas des chiffres, une réalité vécue. Puis pose-lui une seule question ouverte : comment elle se sent depuis ce bilan. Vouvoiement. Ton : une femme qui accompagne une autre femme, avec la science et la bienveillance.`;
+  var _prCtx1 = prenomParcours ? ' Son prénom de parcours est "'+prenomParcours+'" — utilise-le avec chaleur.' : '';
+  var _prCtx2 = prenomParcours ? ' Commence par "Bonjour '+prenomParcours+'."' : '';
+  var sysRetrieve='Tu es SEREINIA, assistante du cabinet KAP (Kinésithérapie · Activité · Prévention), créée par Marc Pezzali, MK-DE, spécialisée accompagnement post-cancer du sein.\nLa patiente revient sur son bilan du '+dateStr+'.'+_prCtx1+' Données enregistrées :\nScore KAP global : '+score+'/100\nEVA : '+eva+'/10\n'+diffTxt+'\n\nINSTRUCTION : Accueille ce retour avec chaleur et douceur.'+_prCtx2+' En une ou deux phrases, rappelle-lui son score et ce qu\'il dit d\'elle — pas des chiffres, une réalité vécue. Puis pose-lui une seule question ouverte : comment elle se sent depuis ce bilan. Vouvoiement. Ton : une femme qui accompagne une autre femme, avec la science et la bienveillance.';
 
   addTyp();
   fetch('https://gentle-poetry-2315.kinepezzali.workers.dev',{
