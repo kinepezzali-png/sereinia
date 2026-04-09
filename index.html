@@ -1027,6 +1027,11 @@ textarea::placeholder{color:var(--text-s)}
 #kine-view-panel{display:none;position:absolute;inset:0;background:#FAF0F2;border-radius:inherit;flex-direction:column;z-index:20;overflow:hidden}
 #kine-view-panel.open{display:flex}
 .kine-hdr{padding:12px 18px;border-bottom:1px solid rgba(168,84,112,0.12);display:flex;align-items:center;gap:10px;flex-shrink:0;background:#FAF0F2}
+.prenom-card{padding:9px 8px;border:1.5px solid rgba(168,84,112,0.18);border-radius:12px;cursor:pointer;text-align:center;transition:all .2s;background:white}
+.prenom-card:hover{border-color:#A85470;background:#FDF0F4}
+.prenom-card.selected{border-color:#A85470;background:#FDF0F4;box-shadow:0 0 0 2px rgba(168,84,112,0.2)}
+.prenom-card-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;color:#2E1818;margin-bottom:2px}
+.prenom-card-phrase{font-size:9.5px;color:#A85470;line-height:1.4;font-style:italic}
 .kine-back{background:none;border:none;cursor:pointer;font-size:18px;color:#C9849A;padding:0 4px}
 .kr-s{margin-bottom:14px}
 .kr-st{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:#A85470;margin-bottom:7px;padding-bottom:5px;border-bottom:2px solid rgba(168,84,112,0.15);display:flex;align-items:center;gap:6px;font-weight:500}
@@ -1099,6 +1104,10 @@ textarea::placeholder{color:var(--text-s)}
   <div class="hero-ring-2"></div>
 
   <!-- Zone haute : SEREINIA + tag spécialité -->
+  <!-- KAP watermark élégant -->
+  <div style="position:absolute;top:28px;left:50%;transform:translateX(-50%);z-index:3;pointer-events:none;user-select:none">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(11px,1.5vw,14px);font-weight:300;letter-spacing:8px;text-transform:uppercase;color:rgba(168,84,112,0.28)">KAP</div>
+  </div>
   <div class="hero-top">
     <div class="hero-brand-name">
       <span class="l-s" style="background:linear-gradient(135deg,#7A3350,#A85470,#C9849A,#A85470,#7A3350);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">S</span><span class="l-e" style="background:linear-gradient(135deg,#7A3350,#A85470,#C9849A,#A85470,#7A3350);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">E</span><span class="l-r" style="background:linear-gradient(135deg,#7A3350,#A85470,#C9849A,#A85470,#7A3350);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">R</span><span class="l-e2" style="background:linear-gradient(135deg,#7A3350,#A85470,#C9849A,#A85470,#7A3350);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">E</span><span class="l-i" style="background:linear-gradient(135deg,#7A3350,#A85470,#C9849A,#A85470,#7A3350);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">I</span><span class="l-n" style="background:linear-gradient(135deg,#7A3350,#A85470,#C9849A,#A85470,#7A3350);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">N</span><span class="l-i2" style="background:linear-gradient(135deg,#7A3350,#A85470,#C9849A,#A85470,#7A3350);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">I</span><span class="l-a" style="background:linear-gradient(135deg,#7A3350,#A85470,#C9849A,#A85470,#7A3350);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">A</span>
@@ -1111,14 +1120,38 @@ textarea::placeholder{color:var(--text-s)}
   <!-- Zone centrale : message principal -->
   <div class="hero-main">
     <h1>Vous n'êtes pas<br><em>juste un sein.</em></h1>
-    <p class="hero-accroche">S'orienter · S'informer · Se reconstruire</p>
-    <p class="hero-p">Vous êtes une femme entière. SEREINIA est là pour vous accompagner — avant, pendant, et longtemps après les traitements.</p>
+    <p class="hero-accroche">S'orienter · Mesurer · Se reconstruire</p>
+    <p class="hero-p">Vous êtes une femme entière. SEREINIA est là pour vous accompagner — un premier bilan pour comprendre où vous en êtes, une prise en charge ciblée, un rebilan pour voir que vous avancez.</p>
     <div class="hero-btns">
       <button class="btn-p" onclick="openChatDirect()">Parler maintenant — c'est gratuit</button>
       <button class="btn-g" onclick="document.getElementById('situations').scrollIntoView({behavior:'smooth'})">Trouver ma situation →</button>
     </div>
-    <div style="margin-top:12px;display:flex;justify-content:center">
-      <button onclick="openTrace()" style="padding:10px 26px;border-radius:32px;background:transparent;border:1px solid rgba(168,84,112,0.35);color:#A85470;font-size:12.5px;font-family:'Jost',sans-serif;cursor:pointer;transition:all .22s;letter-spacing:.3px" onmouseover="this.style.background='rgba(168,84,112,0.06)'" onmouseout="this.style.background='transparent'">Faire mon bilan SEREINIA →</button>
+    <div id="ser-hero-progression-btn" style="margin-top:12px;display:flex;justify-content:center;display:none">
+      <button onclick="openTrace()" style="padding:10px 26px;border-radius:32px;background:transparent;border:1px solid rgba(168,84,112,0.35);color:#A85470;font-size:12.5px;font-family:'Jost',sans-serif;cursor:pointer;transition:all .22s;letter-spacing:.3px" onmouseover="this.style.background='rgba(168,84,112,0.06)'" onmouseout="this.style.background='transparent'">📊 Refaire mon bilan — voir ma progression →</button>
+    </div>
+    <div id="ser-hero-first-bilan-btn" style="margin-top:12px;display:flex;justify-content:center">
+      <button onclick="openTrace()" style="padding:10px 26px;border-radius:32px;background:transparent;border:1px solid rgba(168,84,112,0.35);color:#A85470;font-size:12.5px;font-family:'Jost',sans-serif;cursor:pointer;transition:all .22s;letter-spacing:.3px" onmouseover="this.style.background='rgba(168,84,112,0.06)'" onmouseout="this.style.background='transparent'">Premier bilan gratuit · 5 minutes →</button>
+    </div>
+
+    <!-- Récupération bilan par numéro -->
+    <div style="margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:2">
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(168,84,112,0.5);display:flex;align-items:center;gap:14px">
+        <span style="width:36px;height:1px;background:rgba(168,84,112,0.2);display:inline-block"></span>
+        Vous avez déjà un bilan ?
+        <span style="width:36px;height:1px;background:rgba(168,84,112,0.2);display:inline-block"></span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="ser-immat-retrieve-input" type="text" placeholder="SER-260409-XXXX"
+          style="padding:10px 16px;border:1px solid rgba(168,84,112,0.3);background:rgba(255,255,255,0.85);color:#2E1818;font-family:Jost,sans-serif;font-size:13px;letter-spacing:1px;outline:none;border-radius:24px;width:190px;transition:border .2s"
+          onfocus="this.style.borderColor='#A85470'" onblur="this.style.borderColor='rgba(168,84,112,0.3)'"
+          onkeydown="if(event.key==='Enter')retrieveSerBilanAndOpenChat()">
+        <button onclick="retrieveSerBilanAndOpenChat()"
+          style="padding:10px 18px;background:transparent;border:1px solid rgba(168,84,112,0.35);color:#A85470;font-family:Jost,sans-serif;font-size:12px;cursor:pointer;transition:all .22s;border-radius:24px"
+          onmouseover="this.style.background='rgba(168,84,112,0.06)'" onmouseout="this.style.background='transparent'">
+          Retrouver →
+        </button>
+      </div>
+      <div id="ser-immat-retrieve-err" style="display:none;font-size:11.5px;color:#C04040">Numéro non trouvé sur cet appareil.</div>
     </div>
   </div>
 
@@ -1565,6 +1598,43 @@ textarea::placeholder{color:var(--text-s)}
 
 <script>
 let kapTraceShown=false;
+
+// ── Upload fichier ──
+var docData = null; var docMime = null; var docName = null;
+
+function triggerUpload(){
+  document.getElementById('file-input-doc').click();
+}
+
+function removeDoc(){
+  docData=null; docMime=null; docName=null;
+  var prev = document.getElementById('doc-preview');
+  if(prev) prev.classList.remove('show');
+}
+
+function handleFileUpload(event){
+  var file = event.target.files[0];
+  if(!file) return;
+  var maxMB = 4;
+  if(file.size > maxMB*1024*1024){
+    alert('Fichier trop lourd (max '+maxMB+' Mo)');
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var result = e.target.result;
+    // base64 sans le header data:...;base64,
+    docData = result.split(',')[1];
+    docMime = file.type;
+    docName = file.name;
+    var prev = document.getElementById('doc-preview');
+    var name = document.getElementById('doc-preview-name');
+    if(prev) prev.classList.add('show');
+    if(name) name.textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
 let messageCount=0;
 let sit='general', hist=[], mc=0;
 
@@ -1881,8 +1951,43 @@ Exemples :
 Place la référence juste après la donnée citée, sur la même ligne ou la suivante.
 Maximum 2-3 références par réponse — les plus pertinentes uniquement.
 
-Situation actuelle de la patiente : ${sit}`;
-};
+════════════════════════════════════
+RÈGLE 0 — ACCUEILLIR AVANT D'INFORMER
+════════════════════════════════════
+Si la patiente décrit une situation récente ou rapporte une phrase reçue d'un médecin : accueillir ce moment en UNE phrase, AVANT tout contenu informatif.
+Une femme qui sort d'une chirurgie mammaire ne peut entendre l'information que si elle se sent d'abord entendue.
+Exemples : "Ce que vous traversez est immense — et vous êtes là, c'est déjà beaucoup." / "Mettre des mots sur ce que vous vivez, c'est le premier pas."
+Ne jamais commencer par une explication clinique si la patiente est encore dans l'émotion.
+
+════════════════════════════════════
+RÈGLE PROSE — JAMAIS DE LISTES À TIRETS
+════════════════════════════════════
+Les réponses conversationnelles sont TOUJOURS en prose fluide. Aucune liste à tirets, aucun bullet, aucune numérotation.
+Une liste ressemble à une brochure médicale. La prose ressemble à une femme qui parle à une autre femme.
+Les exercices, les ressources, les disciplines — tout se dit en phrases, jamais en points.
+
+════════════════════════════════════
+RÈGLE BILAN — ORIENTER NATURELLEMENT (jamais intrusif)
+════════════════════════════════════
+Quand la conversation a établi un premier lien et que la patiente a répondu à au moins une question : proposer le bilan UNE FOIS.
+Formulation : "Pour vous accompagner encore plus précisément — il existe un bilan rapide (5 minutes) qui me permettrait d'adapter chaque réponse à votre situation exacte. Voulez-vous qu'on le fasse ensemble ?"
+Ne jamais proposer le bilan avant d'avoir accueilli (Règle 0).
+Ne jamais le proposer deux fois dans la même conversation.
+Ne jamais combiner le bilan et une question dans le même message — si le bilan est proposé, c'est le seul appel à l'action du message.
+
+════════════════════════════════════
+RÈGLE QUESTIONS — UNE SEULE À LA FOIS
+════════════════════════════════════
+Une seule question par message. Jamais deux.
+Si la patiente dit beaucoup de choses d'un coup — accueillir d'abord, questionner ensuite.
+
+════════════════════════════════════
+RECHERCHE ACTIVE — WEB SEARCH
+════════════════════════════════════
+Si une question porte sur un traitement, un protocole ou une recommandation récente en oncologie du sein : utiliser web_search pour vérifier si une publication récente (< 2 ans) modifie les recommandations. Citer la source avec auteur + année. Sinon, s'appuyer sur les références fondamentales ci-dessous.
+
+Situation actuelle de la patiente : ${sit}
+${getBilanRankSer()>1?`CONTEXTE PARCOURS : C'est le ${getBilanRankSer()}ème bilan de cette patiente. Elle revient mesurer sa progression. Reconnaître cet engagement, s'appuyer sur l'historique.`:`Premier contact — construire la relation avant tout.`}`;
 
 function openChat(){
   document.getElementById('overlay').classList.add('open');
@@ -1925,7 +2030,7 @@ function closeChat(){
   document.body.style.overflow='';
 }
 
-function bgClose(e){if(e.target===document.getElementById('overlay'))closeChat();}
+function bgClose(e){if(e.target===document.getElementById('overlay')&&!('ontouchstart' in window))closeChat();}
 
 function addKap(txt){
   try{
@@ -1983,7 +2088,19 @@ async function send(){
   inp.value='';inp.style.height='auto';
   document.getElementById('snd').classList.remove('on');
   addUser(txt);mc++;
-  hist.push({role:'user',content:txt});
+  // Construire le contenu avec ou sans fichier joint
+  var userContent;
+  if(docData && docMime){
+    userContent = [
+      {type: docMime.startsWith('image') ? 'image' : 'document',
+       source: {type:'base64', media_type:docMime, data:docData}},
+      {type:'text', text:txt}
+    ];
+    removeDoc();
+  } else {
+    userContent = txt;
+  }
+  hist.push({role:'user', content:userContent});
   if(mc>=3)document.getElementById('disc').classList.add('on');
   if(mc===5) setTimeout(maybeShowQuestionnaire, 1500);
   if(mc===7) setTimeout(maybeShowTemoignageCard, 2000);
@@ -1993,7 +2110,7 @@ async function send(){
     const r=await fetch('https://gentle-poetry-2315.kinepezzali.workers.dev',{
       method:'POST',
       headers:{'Content-Type':'application/json',},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1024,system:SYS(),messages:hist})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1024,system:SYS(),tools:[{type:'web_search_20250305',name:'web_search'}],messages:hist})
     });
     const d=await r.json();
     rmTyp();
@@ -2255,6 +2372,7 @@ function buildBilanPrompt(kap){
 
 async function openChatAfterBilan(kap){
   kapBilanContext = kap;
+  var progressionCtx = getProgressionContextSer();
   sit = 'general'; hist = []; mc = 0; kapTraceShown = true;
   var msgs = document.getElementById('msgs');
   if(msgs) msgs.innerHTML = '';
@@ -2263,20 +2381,22 @@ async function openChatAfterBilan(kap){
   var overlay = document.getElementById('overlay');
   if(overlay){ overlay.classList.add('open'); document.body.style.overflow='hidden'; }
 
-  // Afficher bouton "Voir mon bilan"
+  // Afficher bouton "Voir mon bilan" — fix iOS Safari
   var btnBilan = document.getElementById('btn-voir-bilan');
-  if(btnBilan) { btnBilan.style.display='flex'; }
+  if(btnBilan){ btnBilan.style.display='flex'; setTimeout(function(){btnBilan.style.display='flex';},400); }
 
   // Indicateur de frappe
   addTyp();
 
   try{
     var prompt = buildBilanPrompt(kap);
-    var sysPrompt = 'Tu es SEREINIA, cr\u00e9\u00e9e par une \u00e9quipe de masseurs-kin\u00e9sith\u00e9rapeutes D.E. du cabinet KAP. Tu retournes UNIQUEMENT un objet JSON valide, sans aucun texte avant ou apr\u00e8s, sans markdown, sans backticks. Format exact: {"intro":"...","points":["...","...","..."],"kine":"...","soir":"...","ouverture":"..."}. intro: 2 phrases max sur ce que le score signifie humainement. points: 3 observations pr\u00e9cises bas\u00e9es sur les donn\u00e9es (EVA, dimensions, objectif). kine: 2 phrases sur ce que la kin\u00e9sith\u00e9rapie peut changer concr\u00e8tement. soir: 1 action simple et pr\u00e9cise pour ce soir. ouverture: 1 question chaleureuse pour inviter la patiente \u00e0 s\'exprimer. Vouvoiement. Ton clinicien bienveillant.';
+  var prenomParcours = localStorage.getItem('kap-ser-prenom') || null;
+  var prenomPhrase = localStorage.getItem('kap-ser-prenom-phrase') || null;
+  var sysPrompt = `Tu es SEREINIA, créée par une équipe de masseurs-kinésithérapeutes D.E. du cabinet KAP. Tu retournes UNIQUEMENT un objet JSON valide, sans aucun texte avant ou après, sans markdown, sans backticks. Format exact: {"intro":"...","points":["...","...","..."],"kine":"...","soir":"...","ouverture":"..."}. intro: 2 phrases max sur ce que le score signifie humainement${prenomParcours?` — adresse-toi à elle par son prénom de parcours "${prenomParcours}"`:''}. points: 3 observations précises basées sur les données (EVA, dimensions, objectif). kine: 2 phrases sur ce que la kinésithérapie peut changer concrètement. soir: 1 action simple et précise pour ce soir. ouverture: 1 question chaleureuse pour inviter la patiente à s'exprimer${prenomParcours?`, en l'appelant par son prénom "${prenomParcours}"`:''}. Vouvoiement. Ton clinicien bienveillant.`;
     var r = await fetch('https://gentle-poetry-2315.kinepezzali.workers.dev',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1200,system:sysPrompt,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1200,system:sysPrompt,messages:[{role:'user',content:prompt+progressionCtx}]})
     });
     var d = await r.json();
     rmTyp();
@@ -2928,14 +3048,40 @@ async function openChatAfterBilan(kap){
       <div id="tr-ia-text">Analyse en cours...</div>
     </div>
 
-    <!-- Numéro de bilan -->
+    <!-- Sélecteur prénom de parcours -->
+    <div id="prenom-selector" style="display:none;padding:16px 20px;background:white">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#A85470;margin-bottom:8px">Votre identité de parcours</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:#2E1818;line-height:1.5;margin-bottom:6px">Voici des prénoms de femmes qui se sont battues<br>et ont survécu.</div>
+        <div style="font-size:12px;color:#8A7070;line-height:1.65">Choisissez celui qui vous parle — ou entrez le vôtre.<br><em style="color:#A85470">Ici, nous pensons que votre prénom est votre plus grande force.</em></div>
+      </div>
+      <div id="prenom-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+        <input id="prenom-custom" type="text" placeholder="Mon prénom…"
+          style="flex:1;padding:10px 14px;border:1.5px solid rgba(168,84,112,0.25);border-radius:20px;font-family:Jost,sans-serif;font-size:13px;color:#2E1818;outline:none;background:white;transition:border .2s"
+          onfocus="this.style.borderColor='#A85470';document.querySelectorAll('.prenom-card').forEach(function(c){c.classList.remove('selected');})"
+          onblur="this.style.borderColor='rgba(168,84,112,0.25)'"
+          onkeydown="if(event.key==='Enter')confirmPrenom()">
+        <button onclick="confirmPrenom()" style="padding:10px 20px;background:#A85470;border:none;border-radius:20px;color:white;font-family:Jost,sans-serif;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.background='#8A3A58'" onmouseout="this.style.background='#A85470'">C'est mon prénom →</button>
+      </div>
+    </div>
+
+    <!-- Numéro de bilan — affiché après choix prénom -->
     <div class="immat-reveal" style="display:none;padding:10px 20px;background:white">
-      <div style="background:#A85470;border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:12px">
-        <div>
-          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:2px">Votre numéro de bilan</div>
-          <div id="immat-display" style="font-family:monospace;font-size:22px;font-weight:bold;color:white;letter-spacing:3px">—</div>
+      <div style="background:#A85470;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:10px">
+        <div style="text-align:center">
+          <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:6px">Bienvenue</div>
+          <div id="prenom-display" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:white;letter-spacing:2px;margin-bottom:2px">—</div>
+          <div id="prenom-date-display" style="font-size:11px;color:rgba(255,255,255,.65)"></div>
+          <div id="prenom-phrase-display" style="font-size:11.5px;color:rgba(255,255,255,.8);font-style:italic;margin-top:6px;line-height:1.55"></div>
         </div>
-        <div style="font-size:11px;color:rgba(255,255,255,.8);line-height:1.5;flex:1">Communiquez ce numéro à votre kiné.</div>
+        <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;font-size:10px;color:rgba(255,255,255,.6);display:flex;justify-content:space-between;align-items:center">
+          <span style="letter-spacing:1px;text-transform:uppercase;font-size:8.5px">Référence kiné</span>
+          <span id="immat-display" style="font-family:monospace;font-weight:600;letter-spacing:2px">—</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;font-size:11px;color:rgba(255,255,255,.8);line-height:1.6">
+          💡 Retrouvez votre bilan depuis cet appareil en saisissant votre référence sur la page d'accueil.
+        </div>
       </div>
     </div>
 
@@ -3443,8 +3589,12 @@ function generateSereiniaResponse(kap){
 
 // ══ IMMATRICULATION ══
 function generateImmat(){
-  var n = Math.floor(1000 + Math.random() * 9000);
-  return 'SER-' + n;
+  var now=new Date();
+  var y=now.getFullYear().toString().slice(-2);
+  var m=String(now.getMonth()+1).padStart(2,'0');
+  var d=String(now.getDate()).padStart(2,'0');
+  var r=Math.floor(1000+Math.random()*9000);
+  return 'SER-'+y+m+d+'-'+r;
 }
 
 function saveBilanToProto(immat){
@@ -3494,6 +3644,17 @@ function saveBilanToProto(immat){
     var existing = JSON.parse(localStorage.getItem('kap-sereinia-bilans') || '[]');
     existing.unshift(payload);
     localStorage.setItem('kap-sereinia-bilans', JSON.stringify(existing));
+    // Sauvegarder aussi par clé immat pour récupération directe
+    localStorage.setItem('kap-bilan-'+immat, JSON.stringify(payload));
+    var recents=JSON.parse(localStorage.getItem('kap-ser-immat-recents')||'[]');
+    recents.unshift(immat);
+    if(recents.length>10)recents=recents.slice(0,10);
+    localStorage.setItem('kap-ser-immat-recents',JSON.stringify(recents));
+    // Historique scores pour progression
+    var hist2=JSON.parse(localStorage.getItem('kap-ser-bilans-history')||'[]');
+    hist2.push({date:payload.date,immat:immat,score:payload.kap_score.global,dims:payload.kap_score.dimensions,eva:payload.donnees_brutes.eva,mode:bilanMode});
+    if(hist2.length>10)hist2=hist2.slice(-10);
+    localStorage.setItem('kap-ser-bilans-history',JSON.stringify(hist2));
   } catch(e){ console.error('Storage error', e); }
   return payload;
 }
@@ -3612,7 +3773,83 @@ function downloadBilanPDF(){
 
   // Afficher le numéro dans la modal avant d'imprimer
   var numDisplay = document.getElementById('immat-display');
-  if(numDisplay){ numDisplay.textContent = immat; numDisplay.closest('.immat-reveal').style.display='block'; }
+  if(numDisplay){
+    numDisplay.textContent = immat;
+    localStorage.setItem('kap-last-immat', immat);
+    showPrenomSelector(immat);
+  }
+
+// ══ SÉLECTEUR PRÉNOM DE PARCOURS ══
+const PRENOMS_PARCOURS = [
+  {nom:'Marie',      phrase:'A illuminé le monde malgré la douleur'},
+  {nom:'Simone',     phrase:'A survécu et a tout reconstruit'},
+  {nom:'Rosa',       phrase:'A tenu debout quand tout disait de céder'},
+  {nom:'Frida',      phrase:'A peint sa douleur en beauté'},
+  {nom:'Malala',     phrase:'A continué à parler après l\'impossible'},
+  {nom:'Amelia',     phrase:'A traversé ce qu\'on disait impossible'},
+  {nom:'Toni',       phrase:'A mis des mots sur l\'indicible'},
+  {nom:'Wangari',    phrase:'A planté la vie quand tout brûlait'},
+  {nom:'Valentina',  phrase:'A ouvert des portes jamais franchies'},
+  {nom:'Harriet',    phrase:'A libéré en risquant tout'},
+  {nom:'Nadia',      phrase:'A trouvé la perfection dans l\'adversité'},
+  {nom:'Chimamanda', phrase:'A nommé ce qu\'on n\'osait pas dire'},
+  {nom:'Christiane', phrase:'A tenu debout quand la salle sifflait'},
+  {nom:'Rigoberta',  phrase:'A témoigné pour celles qui n\'avaient plus de voix'},
+  {nom:'Aung San',   phrase:'Est restée inébranlable malgré tout'}
+];
+
+var _selectedPrenom = null;
+var _currentImmat = null;
+
+function showPrenomSelector(immat){
+  _currentImmat = immat;
+  _selectedPrenom = null;
+  var grid = document.getElementById('prenom-grid');
+  if(!grid) return;
+  grid.innerHTML = PRENOMS_PARCOURS.map(function(p){
+    return `<div class="prenom-card" onclick="selectPrenom(this,'${p.nom}','${p.phrase}')">
+      <div class="prenom-card-name">${p.nom}</div>
+      <div class="prenom-card-phrase">${p.phrase}</div>
+    </div>`;
+  }).join('');
+  var sel = document.getElementById('prenom-selector');
+  if(sel) sel.style.display = 'block';
+}
+
+function selectPrenom(el, nom, phrase){
+  document.querySelectorAll('.prenom-card').forEach(function(c){c.classList.remove('selected');});
+  el.classList.add('selected');
+  _selectedPrenom = {nom:nom, phrase:phrase};
+  var custom = document.getElementById('prenom-custom');
+  if(custom) custom.value = '';
+}
+
+function confirmPrenom(){
+  var custom = document.getElementById('prenom-custom');
+  var nom = (custom && custom.value.trim()) ? custom.value.trim() : (_selectedPrenom ? _selectedPrenom.nom : null);
+  var phrase = _selectedPrenom && !custom.value.trim() ? _selectedPrenom.phrase : `Votre prénom est votre plus grande force.`;
+  if(!nom){ if(custom)custom.focus(); return; }
+
+  // Sauvegarder le prénom
+  localStorage.setItem('kap-ser-prenom', nom);
+  localStorage.setItem('kap-ser-prenom-phrase', phrase);
+  if(_currentImmat) localStorage.setItem('kap-last-immat', _currentImmat);
+
+  // Masquer le sélecteur
+  var sel = document.getElementById('prenom-selector');
+  if(sel) sel.style.display = 'none';
+
+  // Afficher le bloc de bienvenue
+  var dateStr = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+  var prenomDisplay = document.getElementById('prenom-display');
+  var dateDisplay = document.getElementById('prenom-date-display');
+  var phraseDisplay = document.getElementById('prenom-phrase-display');
+  if(prenomDisplay) prenomDisplay.textContent = nom;
+  if(dateDisplay) dateDisplay.textContent = dateStr;
+  if(phraseDisplay) phraseDisplay.textContent = phrase;
+  var immatReveal = document.querySelector('.immat-reveal');
+  if(immatReveal) immatReveal.style.display = 'block';
+}
 
   var win = window.open('', '_blank');
   if(win){
@@ -4363,6 +4600,109 @@ function renderKineReport(){
 </div>';
   el.innerHTML=header+ctxSec+scoresSec+dimsSec+flagsSec+recoSec+footer;
 }
+// ══ HISTORIQUE BILANS SEREINIA — Boucle de Marc ══
+function getBilanRankSer(){
+  try{
+    var h=JSON.parse(localStorage.getItem('kap-ser-bilans-history')||'[]');
+    return h.length;
+  }catch(e){return 0;}
+}
+
+function getPreviousBilanSer(){
+  try{
+    var h=JSON.parse(localStorage.getItem('kap-ser-bilans-history')||'[]');
+    return h.length>=2?h[h.length-2]:null;
+  }catch(e){return null;}
+}
+
+function getProgressionContextSer(){
+  var rank=getBilanRankSer();
+  var prev=getPreviousBilanSer();
+  if(rank<=1||!prev)return '';
+  var kap=computeKAPScore();
+  var diff=kap.global-prev.score;
+  var diffEva=tData.eva-prev.eva;
+  var txt=`\nRANG DU BILAN : ${rank}ème bilan (patiente de retour)\n`;
+  txt+=`BILAN PRÉCÉDENT (${new Date(prev.date).toLocaleDateString('fr-FR')}) : Score ${prev.score}/100 · EVA ${prev.eva}/10\n`;
+  txt+=`ÉVOLUTION : Score ${diff>=0?'+':''}${diff} pts · EVA ${diffEva>=0?'+':''}${diffEva}\n`;
+  txt+=`INSTRUCTION : Cette patiente revient mesurer sa progression. Commencer par reconnaître ce retour avec chaleur — revenir après une chirurgie du sein pour refaire un bilan, c'est un acte de courage et d'engagement envers soi. Souligner l'évolution chiffrée avec douceur. Si amélioration : la célébrer et ouvrir vers la prochaine étape. Si stagnation ou dégradation : accueillir sans jugement, explorer ce qui a changé depuis.\n`;
+  return txt;
+}
+
+// ══ RÉCUPÉRATION BILAN PAR NUMÉRO — SEREINIA ══
+function retrieveSerBilanAndOpenChat(){
+  var input=document.getElementById('ser-immat-retrieve-input');
+  var err=document.getElementById('ser-immat-retrieve-err');
+  if(!input)return;
+  var immat=input.value.trim().toUpperCase();
+  if(!immat){input.focus();return;}
+  err.style.display='none';
+  try{
+    var saved=localStorage.getItem('kap-bilan-'+immat);
+    if(!saved){err.style.display='block';return;}
+    var bilan=JSON.parse(saved);
+    openChatWithSavedBilanSer(bilan);
+  }catch(e){err.style.display='block';}
+}
+
+function openChatWithSavedBilanSer(bilan){
+  sit='general'; hist=[]; mc=0; kapTraceShown=true;
+  var msgs=document.getElementById('msgs');
+  if(msgs)msgs.innerHTML='';
+  var disc=document.getElementById('disc');
+  if(disc)disc.classList.remove('on');
+  var overlay=document.getElementById('overlay');
+  if(overlay){overlay.classList.add('open');document.body.style.overflow='hidden';}
+  var btnBilan=document.getElementById('btn-voir-bilan');
+  if(btnBilan){btnBilan.style.display='flex';setTimeout(function(){btnBilan.style.display='flex';},400);}
+
+  var dateStr=new Date(bilan.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  var score=bilan.kap_score?bilan.kap_score.global:bilan.score||'—';
+  var eva=bilan.donnees_brutes?bilan.donnees_brutes.eva:bilan.eva||'—';
+  var prev=getPreviousBilanSer();
+  var diffTxt='';
+  if(prev&&prev.score!==undefined){
+    var d=score-prev.score;
+    diffTxt=` — évolution depuis le bilan précédent : ${d>=0?'+':''}${d} pts`;
+  }
+
+  var prenomParcours = localStorage.getItem('kap-ser-prenom') || null;
+  var sysRetrieve=`Tu es SEREINIA, assistante du cabinet KAP (Kinésithérapie · Activité · Prévention), créée par Marc Pezzali, MK-DE, spécialisée accompagnement post-cancer du sein.
+La patiente revient sur son bilan du ${dateStr}.${prenomParcours?` Son prénom de parcours est "${prenomParcours}" — utilise-le avec chaleur.`:''} Données enregistrées :
+Score KAP global : ${score}/100
+EVA : ${eva}/10
+${diffTxt}
+
+INSTRUCTION : Accueille ce retour avec chaleur et douceur.${prenomParcours?` Commence par "Bonjour ${prenomParcours}".`:''} En une ou deux phrases, rappelle-lui son score et ce qu'il dit d'elle — pas des chiffres, une réalité vécue. Puis pose-lui une seule question ouverte : comment elle se sent depuis ce bilan. Vouvoiement. Ton : une femme qui accompagne une autre femme, avec la science et la bienveillance.`;
+
+  addTyp();
+  fetch('https://gentle-poetry-2315.kinepezzali.workers.dev',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,system:sysRetrieve,messages:[{role:'user',content:`La patiente retrouve son bilan SEREINIA numéro ${bilan.immat} du ${dateStr}.`}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    rmTyp();
+    var rep=d.content?.[0]?.text||`Votre bilan du ${dateStr} est là. Comment vous sentez-vous depuis ?`;
+    hist=[{role:'assistant',content:rep}];
+    addKap(rep);
+  }).catch(function(){
+    rmTyp();
+    addKap(`Votre bilan du ${dateStr} est retrouvé. Comment vous sentez-vous depuis ?`);
+  });
+}
+
+// ── Hero — afficher le bon bouton selon historique ──
+(function(){
+  try{
+    var h=JSON.parse(localStorage.getItem('kap-ser-bilans-history')||'[]');
+    if(h.length>=1){
+      var pb=document.getElementById('ser-hero-progression-btn');
+      var fb=document.getElementById('ser-hero-first-bilan-btn');
+      if(pb)pb.style.display='flex';
+      if(fb)fb.style.display='none';
+    }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
