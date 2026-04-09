@@ -3028,7 +3028,7 @@ async function openChatAfterBilan(kap){
 <div id="trace-result" style="display:none;position:fixed;inset:0;z-index:99998;background:#F5EEF0;flex-direction:column;overflow:hidden">
   <div style="background:#FAF0F2;width:100%;max-width:600px;margin:0 auto;display:flex;flex-direction:column;flex:1;overflow:hidden;box-shadow:none">
 
-    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
+    <div id="tr-scroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
     <!-- Header -->
     <div style="padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(168,84,112,0.08)">
       <button onclick="closeResult()" style="width:28px;height:28px;border-radius:50%;background:#F5E2E2;border:none;cursor:pointer;font-size:14px;color:#A85470;display:flex;align-items:center;justify-content:center">←</button>
@@ -3051,8 +3051,23 @@ async function openChatAfterBilan(kap){
       <div id="tr-ia-text">Analyse en cours...</div>
     </div>
 
-    <!-- Sélecteur prénom de parcours -->
-    <div id="prenom-selector" style="display:none;padding:16px 20px;background:white">
+    <!-- QR code -->
+    <div style="padding:16px 20px;text-align:center;border-top:1px solid rgba(168,84,112,0.08)">
+      <div style="font-size:10.5px;color:#A08080;font-weight:500;margin-bottom:10px">Donnez votre avis — 1 minute pour améliorer KAP</div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=2E1818&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSd0qJqbrQ1dJnGx-Wlnul4HtUxJADojvmgEBWxTz3Gc76BEOA%2Fviewform%3Fusp%3Dheader" alt="QR avis KAP" style="width:140px;height:140px;border-radius:8px;display:block;margin:0 auto">
+      <div style="font-size:9.5px;color:#C0A0A0;margin-top:6px">Scannez avec votre téléphone</div>
+    </div>
+
+    <!-- Bouton unique sauvegarde -->
+    <div style="margin:0 20px 12px">
+      <button onclick="saveBilanHTML()" style="width:100%;padding:13px;background:white;border:1.5px solid rgba(168,84,112,0.3);border-radius:14px;color:#A85470;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s" onmouseover="this.style.background='#FDF0F4'" onmouseout="this.style.background='white'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+        Sauvegarder mon bilan complet
+      </button>
+    </div>
+
+    <!-- Sélecteur prénom de parcours — APRÈS l'analyse -->
+    <div id="prenom-selector" style="display:none;padding:16px 20px;background:white;border-top:1px solid rgba(168,84,112,0.08)">
       <div style="text-align:center;margin-bottom:16px">
         <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#A85470;margin-bottom:8px">Votre identité de parcours</div>
         <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:#2E1818;line-height:1.5;margin-bottom:6px">Voici des prénoms de femmes qui se sont battues<br>et ont survécu.</div>
@@ -3065,11 +3080,13 @@ async function openChatAfterBilan(kap){
           onfocus="this.style.borderColor='#A85470';document.querySelectorAll('.prenom-card').forEach(function(c){c.classList.remove('selected');})"
           onblur="this.style.borderColor='rgba(168,84,112,0.25)'"
           onkeydown="if(event.key==='Enter')confirmPrenom()">
-        <button onclick="confirmPrenom()" style="padding:10px 20px;background:#A85470;border:none;border-radius:20px;color:white;font-family:Jost,sans-serif;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.background='#8A3A58'" onmouseout="this.style.background='#A85470'">C'est mon prénom →</button>
+        <button onclick="confirmPrenom()"
+          style="padding:10px 20px;background:#A85470;border:none;border-radius:20px;color:white;font-family:Jost,sans-serif;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s"
+          onmouseover="this.style.background='#8A3A58'" onmouseout="this.style.background='#A85470'">C'est mon prénom →</button>
       </div>
     </div>
 
-    <!-- Numéro de bilan — affiché après choix prénom -->
+    <!-- Bienvenue — affiché après choix prénom -->
     <div class="immat-reveal" style="display:none;padding:10px 20px;background:white">
       <div style="background:#A85470;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:10px">
         <div style="text-align:center">
@@ -3086,21 +3103,6 @@ async function openChatAfterBilan(kap){
           💡 Retrouvez votre bilan depuis cet appareil en saisissant votre référence sur la page d'accueil.
         </div>
       </div>
-    </div>
-
-    <!-- QR code -->
-    <div style="padding:16px 20px;text-align:center;border-top:1px solid rgba(168,84,112,0.08)">
-      <div style="font-size:10.5px;color:#A08080;font-weight:500;margin-bottom:10px">Donnez votre avis — 1 minute pour améliorer KAP</div>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=2E1818&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSd0qJqbrQ1dJnGx-Wlnul4HtUxJADojvmgEBWxTz3Gc76BEOA%2Fviewform%3Fusp%3Dheader" alt="QR avis KAP" style="width:140px;height:140px;border-radius:8px;display:block;margin:0 auto">
-      <div style="font-size:9.5px;color:#C0A0A0;margin-top:6px">Scannez avec votre téléphone</div>
-    </div>
-
-    <!-- Bouton unique sauvegarde -->
-    <div style="margin:0 20px 12px">
-      <button onclick="saveBilanHTML()" style="width:100%;padding:13px;background:white;border:1.5px solid rgba(168,84,112,0.3);border-radius:14px;color:#A85470;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s" onmouseover="this.style.background='#FDF0F4'" onmouseout="this.style.background='white'">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
-        Sauvegarder mon bilan complet
-      </button>
     </div>
 
     <!-- Panel Kiné -->
@@ -3128,7 +3130,7 @@ async function openChatAfterBilan(kap){
     <!-- Boutons actions — DANS le conteneur -->
     <div style="display:flex;gap:8px;padding:12px 16px 24px;background:#FAF0F2;flex-shrink:0;border-top:1px solid rgba(168,84,112,0.1)">
       <button onclick="resetTrace()" style="padding:9px 18px;border-radius:20px;border:1px solid rgba(168,84,112,0.2);background:transparent;color:#A08080;font-family:'Jost',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap">↺ Recommencer</button>
-      <button onclick="var _kap=computeKAPScore();closeResult();openChatAfterBilan(_kap);" style="flex:1;padding:10px;border-radius:20px;background:#A85470;border:none;color:white;font-family:'Jost',sans-serif;font-size:13px;cursor:pointer">Continuer avec SEREINIA →</button>
+      <div id="continuer-placeholder" style="flex:1;padding:10px;border-radius:20px;background:rgba(168,84,112,0.08);color:#A85470;font-family:'Jost',sans-serif;font-size:12px;text-align:center;font-style:italic">Choisissez votre prénom pour continuer →</div>
     </div>
 
   </div>
@@ -3462,6 +3464,15 @@ function showTraceResult(){
   }, 150);
 
   generateSereiniaResponse(kap);
+
+  // ── Générer immat + déclencher sélecteur prénom ──
+  var _immat = generateImmat();
+  saveBilanToProto(_immat);
+  localStorage.setItem('kap-last-immat', _immat);
+  var numDisplay = document.getElementById('immat-display');
+  if(numDisplay) numDisplay.textContent = _immat;
+  // Afficher le sélecteur avec délai (après que l'analyse IA soit visible)
+  setTimeout(function(){ showPrenomSelector(_immat); }, 800);
 }
 
 
@@ -3816,7 +3827,13 @@ function showPrenomSelector(immat){
     </div>`;
   }).join('');
   var sel = document.getElementById('prenom-selector');
-  if(sel) sel.style.display = 'block';
+  if(sel){
+    sel.style.display = 'block';
+    setTimeout(function(){
+      var sc = document.getElementById('tr-scroll');
+      if(sc) sc.scrollTop = sc.scrollHeight;
+    }, 100);
+  }
 }
 
 function selectPrenom(el, nom, phrase){
@@ -3830,7 +3847,7 @@ function selectPrenom(el, nom, phrase){
 function confirmPrenom(){
   var custom = document.getElementById('prenom-custom');
   var nom = (custom && custom.value.trim()) ? custom.value.trim() : (_selectedPrenom ? _selectedPrenom.nom : null);
-  var phrase = _selectedPrenom && !custom.value.trim() ? _selectedPrenom.phrase : `Votre prénom est votre plus grande force.`;
+  var phrase = _selectedPrenom && !custom.value.trim() ? _selectedPrenom.phrase : 'Votre prénom est votre plus grande force.';
   if(!nom){ if(custom)custom.focus(); return; }
 
   // Sauvegarder le prénom
@@ -3852,6 +3869,13 @@ function confirmPrenom(){
   if(phraseDisplay) phraseDisplay.textContent = phrase;
   var immatReveal = document.querySelector('.immat-reveal');
   if(immatReveal) immatReveal.style.display = 'block';
+
+  // Ouvrir le chat après 1.8s — laisser la patiente lire son bloc de bienvenue
+  setTimeout(function(){
+    var kap = computeKAPScore();
+    closeResult();
+    openChatAfterBilan(kap);
+  }, 1800);
 }
 
   var win = window.open('', '_blank');
