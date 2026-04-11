@@ -1161,35 +1161,7 @@ textarea::placeholder{color:var(--text-s)}
     <p class="hero-accroche">S'orienter · Mesurer · Se reconstruire</p>
     <p class="hero-p" style="max-width:480px">Entre la découverte et les soins, entre les soins et la vie d'après — il y a des moments où les mots manquent, où les questions s'accumulent, où on se sent seule face à ce qu'on traverse.<br><br><em style="color:var(--rose-deep);font-style:normal">SEREINIA est là, à chaque instant de ce combat.</em></p>
     <div class="hero-btns">
-      <button class="btn-p" onclick="openChatDirect()">Parler maintenant — c'est gratuit</button>
-      <button class="btn-g" onclick="document.getElementById('situations').scrollIntoView({behavior:'smooth'})">Trouver ma situation →</button>
-    </div>
-    <div id="ser-hero-progression-btn" style="margin-top:12px;display:flex;justify-content:center;display:none">
-      <button onclick="openTrace()" style="padding:10px 26px;border-radius:32px;background:transparent;border:1px solid rgba(168,84,112,0.35);color:#A85470;font-size:12.5px;font-family:'Jost',sans-serif;cursor:pointer;transition:all .22s;letter-spacing:.3px" onmouseover="this.style.background='rgba(168,84,112,0.06)'" onmouseout="this.style.background='transparent'">📊 Refaire mon bilan — voir ma progression →</button>
-    </div>
-    <div id="ser-hero-first-bilan-btn" style="margin-top:12px;display:flex;justify-content:center">
-      <button onclick="openTrace()" style="padding:10px 26px;border-radius:32px;background:transparent;border:1px solid rgba(168,84,112,0.35);color:#A85470;font-size:12.5px;font-family:'Jost',sans-serif;cursor:pointer;transition:all .22s;letter-spacing:.3px" onmouseover="this.style.background='rgba(168,84,112,0.06)'" onmouseout="this.style.background='transparent'">Premier bilan gratuit · 5 minutes →</button>
-    </div>
-
-    <!-- Récupération bilan par numéro -->
-    <div style="margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:2">
-      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(168,84,112,0.5);display:flex;align-items:center;gap:14px">
-        <span style="width:36px;height:1px;background:rgba(168,84,112,0.2);display:inline-block"></span>
-        Vous avez déjà un bilan ?
-        <span style="width:36px;height:1px;background:rgba(168,84,112,0.2);display:inline-block"></span>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="ser-immat-retrieve-input" type="text" placeholder="SER-260409-XXXX"
-          style="padding:10px 16px;border:1px solid rgba(168,84,112,0.3);background:rgba(255,255,255,0.85);color:#2E1818;font-family:Jost,sans-serif;font-size:13px;letter-spacing:1px;outline:none;border-radius:24px;width:190px;transition:border .2s"
-          onfocus="this.style.borderColor='#A85470'" onblur="this.style.borderColor='rgba(168,84,112,0.3)'"
-          onkeydown="if(event.key==='Enter')retrieveSerBilanAndOpenChat()">
-        <button onclick="retrieveSerBilanAndOpenChat()"
-          style="padding:10px 18px;background:transparent;border:1px solid rgba(168,84,112,0.35);color:#A85470;font-family:Jost,sans-serif;font-size:12px;cursor:pointer;transition:all .22s;border-radius:24px"
-          onmouseover="this.style.background='rgba(168,84,112,0.06)'" onmouseout="this.style.background='transparent'">
-          Retrouver →
-        </button>
-      </div>
-      <div id="ser-immat-retrieve-err" style="display:none;font-size:11.5px;color:#C04040">Numéro non trouvé sur cet appareil.</div>
+      <button class="btn-p" onclick="openChatDirect()">Parler à SEREINIA — c'est gratuit</button>
     </div>
   </div>
 
@@ -1677,8 +1649,8 @@ textarea::placeholder{color:var(--text-s)}
       <button class="p-close" onclick="closeChat()">✕</button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px 4px;border-bottom:1px solid rgba(168,84,112,0.1)">
-      <span style="font-family:'Jost',sans-serif;font-size:11px;color:#A08080;font-style:italic">Pour un bilan complet et personnalisé</span>
-      <button onclick="openTrace()" style="padding:6px 16px;border-radius:20px;background:transparent;border:1.5px solid rgba(168,84,112,0.35);color:#A85470;font-family:'Jost',sans-serif;font-size:11px;cursor:pointer;white-space:nowrap">✦ Voir mon bilan →</button>
+      <span style="font-family:'Jost',sans-serif;font-size:11px;color:#A08080;font-style:italic">SEREINIA · Cabinet KAP</span>
+      <button onclick="showBilanFromChat()" style="padding:6px 16px;border-radius:20px;background:transparent;border:1.5px solid rgba(168,84,112,0.35);color:#A85470;font-family:'Jost',sans-serif;font-size:11px;cursor:pointer;white-space:nowrap">📊 Mon bilan →</button>
     </div>
 
     <div class="sit-bar">
@@ -1703,11 +1675,6 @@ textarea::placeholder{color:var(--text-s)}
     <div class="izone">
       <div class="doc-preview" id="doc-preview"><span>📄</span><span class="doc-preview-name" id="doc-preview-name"></span><button class="doc-remove" onclick="removeDoc()">✕</button></div>
       <div class="disc" id="disc">KAP IA est un outil d'information, pas un substitut à votre médecin. Urgences&nbsp;: 15. · <a href="kap-beta-feedback.html?module=sein" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;white-space:nowrap">Donner mon avis →</a></div>
-      <div style="padding:6px 12px 0;display:flex;justify-content:center">
-        <button id="btn-voir-bilan" onclick="showBilanFromChat()" style="display:none;padding:6px 14px;border-radius:20px;border:1px solid rgba(168,84,112,0.25);background:#FDF0F4;color:#A85470;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;cursor:pointer;gap:6px;align-items:center">
-          📊 Voir mon bilan
-        </button>
-      </div>
       <div class="ibox">
         <button class="upload-btn" onclick="triggerUpload()" title="Joindre un document PDF ou image"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></button>
         <input type="file" id="file-input-doc" accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload(event)">
@@ -1725,6 +1692,28 @@ textarea::placeholder{color:var(--text-s)}
     </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══════════════ MODALE FEEDBACK ═══════════════ -->
+<div id="feedback-overlay" style="display:none;position:fixed;inset:0;z-index:1002;background:rgba(46,24,30,0.55);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:16px">
+  <div style="background:#FAF0F2;border-radius:28px 28px 22px 22px;width:100%;max-width:610px;max-height:80vh;overflow-y:auto;box-shadow:0 -12px 60px rgba(100,40,60,0.22);animation:slideUp .35s cubic-bezier(.4,0,.2,1)">
+    <div style="padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(168,84,112,0.1)">
+      <button onclick="showBilanFromFeedback()" style="padding:7px 16px;border-radius:20px;background:transparent;border:1.5px solid rgba(168,84,112,0.3);color:#A85470;font-family:'Jost',sans-serif;font-size:11px;cursor:pointer">📊 Mon bilan →</button>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#C9849A">Votre avis</div>
+      <button onclick="closeFeedback()" style="width:28px;height:28px;border-radius:50%;background:#F0E0E4;border:none;cursor:pointer;font-size:14px;color:#A85470;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    <div style="padding:28px 24px;text-align:center">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#2E1818;margin-bottom:8px">Merci d'avoir parlé avec SEREINIA.</div>
+      <div style="font-size:13px;color:#8A7070;line-height:1.72;margin-bottom:24px">Votre avis nous prend une minute et nous aide à mieux accompagner toutes les femmes qui passeront après vous.</div>
+      <div style="background:white;border-radius:16px;padding:20px;border:1px solid rgba(168,84,112,0.12);display:inline-block;margin-bottom:16px">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=2E1818&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSd0qJqbrQ1dJnGx-Wlnul4HtUxJADojvmgEBWxTz3Gc76BEOA%2Fviewform%3Fusp%3Dheader" alt="QR avis SEREINIA" style="width:160px;height:160px;border-radius:8px;display:block">
+        <div style="font-size:10px;color:#B0A0A0;margin-top:8px">Scannez avec votre téléphone</div>
+      </div>
+      <div style="margin-top:8px">
+        <button onclick="closeFeedback()" style="padding:12px 28px;border-radius:20px;background:transparent;border:1px solid rgba(168,84,112,0.25);color:#A85470;font-family:'Jost',sans-serif;font-size:12px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(168,84,112,0.06)'" onmouseout="this.style.background='transparent'">Revenir à la conversation</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2632,8 +2621,82 @@ function renderSereniaAnalyse(data){
 }
 
 function showBilanFromChat(){
-  var r = document.getElementById('trace-result');
-  if(r){ r.style.display='flex'; r.style.flexDirection='column'; document.body.style.overflow='hidden'; }
+  var msgs = document.getElementById('msgs');
+  if(!msgs) return;
+
+  // Vérifier si un bilan existe
+  var hasBilan = kapBilanContext && kapBilanContext.global !== null;
+  var lastImmat = localStorage.getItem('kap-last-immat');
+  var savedBilan = lastImmat ? localStorage.getItem('kap-bilan-'+lastImmat) : null;
+
+  if(!hasBilan && !savedBilan){
+    // Aucun bilan — proposer de le faire
+    var row = document.createElement('div');
+    row.className = 'mrow';
+    row.innerHTML = '<div style="background:#FDF0F4;border:1.5px solid rgba(168,84,112,0.18);border-radius:14px;padding:16px 18px;text-align:center">' +
+      '<div style="font-size:13px;color:#5A3A40;margin-bottom:12px;line-height:1.65">Vous n\'avez pas encore de bilan enregistré.<br>Le bilan prend 5 minutes et personnalise chaque réponse.</div>' +
+      '<button onclick="openTrace()" style="padding:10px 22px;background:#A85470;border:none;border-radius:20px;color:white;font-family:\'Jost\',sans-serif;font-size:12.5px;cursor:pointer">Faire mon bilan →</button>' +
+    '</div>';
+    msgs.appendChild(row);
+    var anc = document.getElementById('anc');
+    if(anc) anc.scrollIntoView({behavior:'smooth'});
+    return;
+  }
+
+  // Bilan disponible — afficher le résumé inline
+  var kap = kapBilanContext;
+  var bilan = savedBilan ? JSON.parse(savedBilan) : null;
+  var score = kap ? kap.global : (bilan && bilan.kap_score ? bilan.kap_score.global : '—');
+  var dims  = kap ? kap.dims  : (bilan && bilan.kap_score ? bilan.kap_score.dimensions : {});
+  var eva   = kap ? (typeof tData !== 'undefined' ? tData.eva : '—') : (bilan && bilan.donnees_brutes ? bilan.donnees_brutes.eva : '—');
+  var lbl   = typeof kapScoreLabel === 'function' ? kapScoreLabel(score) : {label:'',color:'#A85470'};
+
+  function dimBar(label, val){
+    if(val === null || val === undefined) return '';
+    var c = val >= 70 ? '#2D6A4F' : val >= 45 ? '#A85470' : '#7A3350';
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">' +
+      '<div style="font-size:11px;color:#5A3A40;width:120px;flex-shrink:0">' + label + '</div>' +
+      '<div style="flex:1;height:5px;background:rgba(168,84,112,0.1);border-radius:3px;overflow:hidden">' +
+        '<div style="width:' + val + '%;height:100%;background:' + c + ';border-radius:3px"></div>' +
+      '</div>' +
+      '<div style="font-size:11px;font-weight:600;color:' + c + ';width:24px;text-align:right">' + val + '</div>' +
+    '</div>';
+  }
+
+  var html = '<div style="background:white;border:1px solid rgba(168,84,112,0.15);border-radius:16px;padding:18px;margin:4px 0">' +
+    '<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#A85470;margin-bottom:12px">📊 Votre bilan SEREINIA</div>' +
+    '<div style="background:linear-gradient(135deg,#7A3350,#A85470);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px">' +
+      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:48px;font-weight:300;color:white;line-height:1">' + score + '</div>' +
+      '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:4px">' + lbl.label + ' · EVA ' + eva + '/10</div>' +
+    '</div>' +
+    dimBar('Douleur', dims.D) +
+    dimBar('Fonctionnalité', dims.F) +
+    dimBar('Image de soi', dims.K || dims.I) +
+    dimBar('Fatigue', dims.Fa) +
+    (lastImmat ? '<div style="font-size:10px;color:#C0A0A0;margin-top:10px;text-align:center">Référence · ' + lastImmat + '</div>' : '') +
+  '</div>';
+
+  var row = document.createElement('div');
+  row.className = 'mrow';
+  row.innerHTML = html;
+  msgs.appendChild(row);
+  var anc = document.getElementById('anc');
+  if(anc) anc.scrollIntoView({behavior:'smooth'});
+}
+
+function closeChatToFeedback(module){
+  var fb = document.getElementById('feedback-overlay');
+  if(fb){ fb.style.display = 'flex'; }
+}
+
+function closeFeedback(){
+  var fb = document.getElementById('feedback-overlay');
+  if(fb){ fb.style.display = 'none'; }
+}
+
+function showBilanFromFeedback(){
+  closeFeedback();
+  showBilanFromChat();
 }
 
 function buildBilanPrompt(kap){
