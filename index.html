@@ -1653,9 +1653,9 @@ textarea::placeholder{color:var(--text-s)}
       <button onclick="showBilanFromChat()" style="padding:6px 16px;border-radius:20px;background:transparent;border:1.5px solid rgba(168,84,112,0.35);color:#A85470;font-family:'Jost',sans-serif;font-size:11px;cursor:pointer;white-space:nowrap">📊 Mon bilan →</button>
     </div>
 
-    <div class="sit-bar">
+    <div class="sit-bar" id="sit-bar">
       <div class="sit-bar-label">Votre situation</div>
-      <div class="sit-bar-btns">
+      <div class="sit-bar-btns" id="sit-bar-btns">
         <button class="s-btn" data-sit="recente"  onclick="setSit(this)">🌸 Opération récente</button>
         <button class="s-btn" data-sit="traitement" onclick="setSit(this)">💊 En traitement</button>
         <button class="s-btn" data-sit="prothese" onclick="setSit(this)">🤍 Prothèse / Reconstruction</button>
@@ -1663,6 +1663,7 @@ textarea::placeholder{color:var(--text-s)}
         <button class="s-btn" data-sit="lympho"   onclick="setSit(this)">💧 Lymphœdème / Cordes</button>
         <button class="s-btn" data-sit="ordonnance" onclick="setSit(this)">📋 Ordonnance reçue</button>
       </div>
+      <div id="sit-selected-display" style="display:none;padding:6px 0 2px"></div>
     </div>
 
     <div class="msgs" id="msgs">
@@ -2540,13 +2541,14 @@ function _parActionFromScore(kap){
 
 function launchChatFromParcours(){
   closeParcours();
-  // Réinitialiser le chat
   sit = parcoursAnchor || sit || 'general';
   hist = []; mc = 0; kapTraceShown = true;
   var msgs = document.getElementById('msgs');
   if(msgs) msgs.innerHTML = '';
   var disc = document.getElementById('disc');
   if(disc) disc.classList.remove('on');
+  // Afficher la situation sélectionnée dans la barre
+  if(typeof updateSitBar === 'function') updateSitBar(sit);
   // Si bilan fait, ouvrir via openChatAfterBilan
   if(parcoursKap){
     openChatAfterBilan(parcoursKap);
@@ -2621,67 +2623,69 @@ function renderSereniaAnalyse(data){
 }
 
 function showBilanFromChat(){
-  var msgs = document.getElementById('msgs');
-  if(!msgs) return;
-
-  // Vérifier si un bilan existe
+  // Si bilan dispo → rouvrir trace-result complet avec analyse
   var hasBilan = kapBilanContext && kapBilanContext.global !== null;
   var lastImmat = localStorage.getItem('kap-last-immat');
   var savedBilan = lastImmat ? localStorage.getItem('kap-bilan-'+lastImmat) : null;
+  var r = document.getElementById('trace-result');
 
-  if(!hasBilan && !savedBilan){
-    // Aucun bilan — proposer de le faire
-    var row = document.createElement('div');
-    row.className = 'mrow';
-    row.innerHTML = '<div style="background:#FDF0F4;border:1.5px solid rgba(168,84,112,0.18);border-radius:14px;padding:16px 18px;text-align:center">' +
-      '<div style="font-size:13px;color:#5A3A40;margin-bottom:12px;line-height:1.65">Vous n\'avez pas encore de bilan enregistré.<br>Le bilan prend 5 minutes et personnalise chaque réponse.</div>' +
-      '<button onclick="openTrace()" style="padding:10px 22px;background:#A85470;border:none;border-radius:20px;color:white;font-family:\'Jost\',sans-serif;font-size:12.5px;cursor:pointer">Faire mon bilan →</button>' +
-    '</div>';
-    msgs.appendChild(row);
-    var anc = document.getElementById('anc');
-    if(anc) anc.scrollIntoView({behavior:'smooth'});
+  if((hasBilan || savedBilan) && r){
+    r.style.display = 'flex';
+    r.style.flexDirection = 'column';
+    document.body.style.overflow = 'hidden';
     return;
   }
 
-  // Bilan disponible — afficher le résumé inline
-  var kap = kapBilanContext;
-  var bilan = savedBilan ? JSON.parse(savedBilan) : null;
-  var score = kap ? kap.global : (bilan && bilan.kap_score ? bilan.kap_score.global : '—');
-  var dims  = kap ? kap.dims  : (bilan && bilan.kap_score ? bilan.kap_score.dimensions : {});
-  var eva   = kap ? (typeof tData !== 'undefined' ? tData.eva : '—') : (bilan && bilan.donnees_brutes ? bilan.donnees_brutes.eva : '—');
-  var lbl   = typeof kapScoreLabel === 'function' ? kapScoreLabel(score) : {label:'',color:'#A85470'};
-
-  function dimBar(label, val){
-    if(val === null || val === undefined) return '';
-    var c = val >= 70 ? '#2D6A4F' : val >= 45 ? '#A85470' : '#7A3350';
-    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">' +
-      '<div style="font-size:11px;color:#5A3A40;width:120px;flex-shrink:0">' + label + '</div>' +
-      '<div style="flex:1;height:5px;background:rgba(168,84,112,0.1);border-radius:3px;overflow:hidden">' +
-        '<div style="width:' + val + '%;height:100%;background:' + c + ';border-radius:3px"></div>' +
-      '</div>' +
-      '<div style="font-size:11px;font-weight:600;color:' + c + ';width:24px;text-align:right">' + val + '</div>' +
-    '</div>';
-  }
-
-  var html = '<div style="background:white;border:1px solid rgba(168,84,112,0.15);border-radius:16px;padding:18px;margin:4px 0">' +
-    '<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#A85470;margin-bottom:12px">📊 Votre bilan SEREINIA</div>' +
-    '<div style="background:linear-gradient(135deg,#7A3350,#A85470);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px">' +
-      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:48px;font-weight:300;color:white;line-height:1">' + score + '</div>' +
-      '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:4px">' + lbl.label + ' · EVA ' + eva + '/10</div>' +
-    '</div>' +
-    dimBar('Douleur', dims.D) +
-    dimBar('Fonctionnalité', dims.F) +
-    dimBar('Image de soi', dims.K || dims.I) +
-    dimBar('Fatigue', dims.Fa) +
-    (lastImmat ? '<div style="font-size:10px;color:#C0A0A0;margin-top:10px;text-align:center">Référence · ' + lastImmat + '</div>' : '') +
-  '</div>';
-
+  // Aucun bilan — proposer dans le chat
+  var msgs = document.getElementById('msgs');
+  if(!msgs) return;
   var row = document.createElement('div');
   row.className = 'mrow';
-  row.innerHTML = html;
+  row.innerHTML = '<div style="background:#FDF0F4;border:1.5px solid rgba(168,84,112,0.18);border-radius:14px;padding:16px 18px;text-align:center">' +
+    '<div style="font-size:13px;color:#5A3A40;margin-bottom:12px;line-height:1.65">Vous n\'avez pas encore de bilan enregistré.<br>Le bilan prend 5 minutes et personnalise chaque réponse.</div>' +
+    '<button onclick="openTrace()" style="padding:10px 22px;background:#A85470;border:none;border-radius:20px;color:white;font-family:\'Jost\',sans-serif;font-size:12.5px;cursor:pointer">Faire mon bilan →</button>' +
+  '</div>';
   msgs.appendChild(row);
   var anc = document.getElementById('anc');
   if(anc) anc.scrollIntoView({behavior:'smooth'});
+}
+
+// Labels situations
+var SIT_LABELS = {
+  recente:    '🌸 Opération récente',
+  traitement: '💊 En cours de traitement',
+  prothese:   '🤍 Prothèse / Reconstruction',
+  apres:      '🌿 Après les traitements',
+  lympho:     '💧 Lymphœdème / Cordes',
+  ordonnance: '📋 Ordonnance reçue',
+  general:    '💬 Question / orientation'
+};
+
+function updateSitBar(sitKey){
+  var btns = document.getElementById('sit-bar-btns');
+  var display = document.getElementById('sit-selected-display');
+  var label = SIT_LABELS[sitKey];
+  if(!label || !sitKey){
+    if(btns) btns.style.display = '';
+    if(display) display.style.display = 'none';
+    return;
+  }
+  if(btns) btns.style.display = 'none';
+  if(display){
+    display.style.display = 'flex';
+    display.style.alignItems = 'center';
+    display.style.gap = '10px';
+    display.innerHTML =
+      '<span style="background:rgba(168,84,112,0.12);border:1px solid rgba(168,84,112,0.25);border-radius:20px;padding:5px 14px;font-size:12px;color:#A85470;font-family:\'Jost\',sans-serif">' + label + '</span>' +
+      '<button onclick="resetSitBar()" style="font-size:10px;color:#B0A0A0;background:none;border:none;cursor:pointer;text-decoration:underline;font-family:\'Jost\',sans-serif;padding:0">Changer</button>';
+  }
+}
+
+function resetSitBar(){
+  var btns = document.getElementById('sit-bar-btns');
+  var display = document.getElementById('sit-selected-display');
+  if(btns) btns.style.display = '';
+  if(display) display.style.display = 'none';
 }
 
 function closeChatToFeedback(module){
