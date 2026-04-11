@@ -928,7 +928,42 @@ textarea::placeholder{color:var(--text-s)}
 #scene-b.go .sc-ser-letters{opacity:1;transform:translateY(0);}
 #scene-b.go .sc-btn-wrap{opacity:1;transform:translateY(0);}
 
-/* ══ PROTOCOLES SEREINIA ══ */
+/* ══ PARCOURS 3 ÉTAPES ══ */
+#parcours-overlay{position:fixed;inset:0;z-index:1001;background:rgba(46,24,30,0.62);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;padding:16px}
+#parcours-overlay.open{display:flex}
+#parcours-panel{background:#FAF0F2;border-radius:28px 28px 22px 22px;width:100%;max-width:610px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -12px 60px rgba(100,40,60,0.22);animation:slideUp .38s cubic-bezier(.4,0,.2,1)}
+.par-head{padding:18px 20px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(168,84,112,0.1);flex-shrink:0}
+.par-steps{display:flex;align-items:center;gap:8px}
+.par-step-dot{width:8px;height:8px;border-radius:50%;background:rgba(168,84,112,0.2);transition:all .3s}
+.par-step-dot.active{background:#A85470;width:24px;border-radius:4px}
+.par-step-dot.done{background:rgba(168,84,112,0.5)}
+.par-step-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A85470;font-family:'Jost',sans-serif}
+.par-close{width:28px;height:28px;border-radius:50%;background:#F0E0E4;border:none;cursor:pointer;font-size:14px;color:#A85470;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.par-close:hover{background:#EAD0D8}
+.par-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:24px 22px}
+.par-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:#2E1818;line-height:1.3;margin-bottom:8px}
+.par-sub{font-size:13px;color:#8A7070;line-height:1.72;margin-bottom:22px}
+.par-anchors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.par-anchor{padding:14px 16px;background:white;border:1.5px solid rgba(168,84,112,0.15);border-radius:14px;cursor:pointer;text-align:left;transition:all .2s;font-family:'Jost',sans-serif}
+.par-anchor:hover{border-color:#A85470;background:#FDF5F7;transform:translateY(-1px)}
+.par-anchor.selected{border-color:#A85470;background:#FDF0F4;box-shadow:0 0 0 3px rgba(168,84,112,0.1)}
+.par-anchor-icon{font-size:20px;margin-bottom:6px;display:block}
+.par-anchor-label{font-size:12.5px;font-weight:500;color:#2E1818;line-height:1.4}
+.par-anchor-desc{font-size:11px;color:#A08080;margin-top:3px;line-height:1.4}
+.par-footer{padding:14px 22px 20px;border-top:1px solid rgba(168,84,112,0.08);flex-shrink:0;display:flex;gap:10px;background:#FAF0F2}
+.par-btn-next{flex:1;padding:14px;border-radius:20px;background:#A85470;border:none;color:white;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .22s;box-shadow:0 4px 16px rgba(168,84,112,0.22)}
+.par-btn-next:hover{background:#8A3A58;transform:translateY(-1px)}
+.par-btn-next:disabled{opacity:.4;pointer-events:none;transform:none}
+.par-btn-skip{padding:14px 18px;border-radius:20px;background:transparent;border:1px solid rgba(168,84,112,0.2);color:#A08080;font-family:'Jost',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
+.par-btn-skip:hover{border-color:#A85470;color:#A85470}
+.par-score-reveal{background:linear-gradient(135deg,#7A3350,#A85470);border-radius:16px;padding:22px;text-align:center;margin-bottom:18px}
+.par-score-num{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:white;line-height:1}
+.par-score-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:4px}
+.par-dim-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.par-dim-name{font-size:11.5px;color:#5A3A40;width:140px;flex-shrink:0}
+.par-dim-bar{flex:1;height:6px;background:rgba(168,84,112,0.12);border-radius:3px;overflow:hidden}
+.par-dim-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.par-dim-val{font-size:11px;font-weight:600;width:32px;text-align:right;flex-shrink:0}
 .proto-save-btn{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:5px 12px;border-radius:16px;border:1px solid var(--border-m);background:transparent;color:var(--text-s);font-size:10px;letter-spacing:.5px;font-family:'Jost',sans-serif;cursor:pointer;transition:all .18s;}
 .proto-save-btn:hover{border-color:var(--rose-mid);color:var(--rose-deep);background:var(--rose-soft)}
 .proto-save-btn.saved{border-color:var(--rose-mid);color:var(--rose-deep);pointer-events:none}
@@ -1124,7 +1159,7 @@ textarea::placeholder{color:var(--text-s)}
   <div class="hero-main">
     <h1>Vous n'êtes pas<br><em>juste un sein.</em></h1>
     <p class="hero-accroche">S'orienter · Mesurer · Se reconstruire</p>
-    <p class="hero-p">Vous êtes une femme entière. SEREINIA est là pour vous accompagner — un premier bilan pour comprendre où vous en êtes, une prise en charge ciblée, un rebilan pour voir que vous avancez.</p>
+    <p class="hero-p" style="max-width:480px">Entre la découverte et les soins, entre les soins et la vie d'après — il y a des moments où les mots manquent, où les questions s'accumulent, où on se sent seule face à ce qu'on traverse.<br><br><em style="color:var(--rose-deep);font-style:normal">SEREINIA est là, à chaque instant de ce combat.</em></p>
     <div class="hero-btns">
       <button class="btn-p" onclick="openChatDirect()">Parler maintenant — c'est gratuit</button>
       <button class="btn-g" onclick="document.getElementById('situations').scrollIntoView({behavior:'smooth'})">Trouver ma situation →</button>
@@ -1535,6 +1570,100 @@ textarea::placeholder{color:var(--text-s)}
   <div class="ft-copy">© 2026 KAP — Gagny · Chessy · Seine-Saint-Denis · Seine-et-Marne</div>
 </footer>
 
+<!-- ═══════════════ PARCOURS 3 ÉTAPES ═══════════════ -->
+<div id="parcours-overlay">
+  <div id="parcours-panel">
+
+    <div class="par-head">
+      <div class="par-steps">
+        <div class="par-step-dot active" id="pdot-1"></div>
+        <div class="par-step-dot" id="pdot-2"></div>
+        <div class="par-step-dot" id="pdot-3"></div>
+      </div>
+      <div class="par-step-label" id="par-step-label">S'orienter</div>
+      <button class="par-close" onclick="closeParcours()">✕</button>
+    </div>
+
+    <div class="par-body" id="par-body">
+
+      <!-- ÉTAPE 1 — S'orienter -->
+      <div id="par-step-1">
+        <div class="par-title">Bienvenue sur SEREINIA.</div>
+        <p class="par-sub">SEREINIA vous accompagne à chaque instant de votre parcours — pour s'orienter, mesurer, et se reconstruire.<br><br>Pour vous répondre vraiment, dites-nous simplement pourquoi vous êtes là aujourd'hui.</p>
+        <div class="par-anchors" id="par-anchors">
+          <div class="par-anchor" data-sit="recente" onclick="selectAnchor(this)">
+            <span class="par-anchor-icon">🌸</span>
+            <div class="par-anchor-label">Opération récente</div>
+            <div class="par-anchor-desc">Moins de 3 mois — douleur, cicatrice, bras</div>
+          </div>
+          <div class="par-anchor" data-sit="traitement" onclick="selectAnchor(this)">
+            <span class="par-anchor-icon">💊</span>
+            <div class="par-anchor-label">En cours de traitement</div>
+            <div class="par-anchor-desc">Chimio, radio, hormonothérapie</div>
+          </div>
+          <div class="par-anchor" data-sit="apres" onclick="selectAnchor(this)">
+            <span class="par-anchor-icon">🌿</span>
+            <div class="par-anchor-label">Après les traitements</div>
+            <div class="par-anchor-desc">Je me sens encore différente d'avant</div>
+          </div>
+          <div class="par-anchor" data-sit="lympho" onclick="selectAnchor(this)">
+            <span class="par-anchor-icon">💧</span>
+            <div class="par-anchor-label">Bras, lymphœdème, cordes</div>
+            <div class="par-anchor-desc">Lourdeur, gonflement, cicatrice qui tire</div>
+          </div>
+          <div class="par-anchor" data-sit="prothese" onclick="selectAnchor(this)">
+            <span class="par-anchor-icon">🤍</span>
+            <div class="par-anchor-label">Reconstruction</div>
+            <div class="par-anchor-desc">Prothèse, reconstruction, image de soi</div>
+          </div>
+          <div class="par-anchor" data-sit="general" onclick="selectAnchor(this)">
+            <span class="par-anchor-icon">💬</span>
+            <div class="par-anchor-label">Une question, un doute</div>
+            <div class="par-anchor-desc">Je cherche à comprendre, m'orienter</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 — Mesurer -->
+      <div id="par-step-2" style="display:none">
+        <div class="par-title">Mesurons où vous en êtes.</div>
+        <p class="par-sub">Le bilan SEREINIA prend 5 minutes. Il mesure votre douleur, votre fonctionnalité, votre fatigue, votre image de soi. Chaque réponse personnalise ce que SEREINIA vous dira ensuite.</p>
+        <div style="background:white;border-radius:14px;padding:18px;border:1px solid rgba(168,84,112,0.12);margin-bottom:16px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div style="font-size:28px;flex-shrink:0">📊</div>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:#2E1818;margin-bottom:4px">Bilan SEREINIA · 5 minutes</div>
+              <div style="font-size:12px;color:#8A7070;line-height:1.65">Douleur · Fonctionnalité · Fatigue · Image de soi<br>Votre score est enregistré et comparé à chaque rebilan.</div>
+            </div>
+          </div>
+          <button onclick="startParcoursTrace()" style="margin-top:14px;width:100%;padding:12px;background:#A85470;border:none;border-radius:12px;color:white;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s" onmouseover="this.style.background='#8A3A58'" onmouseout="this.style.background='#A85470'">
+            Faire mon bilan maintenant →
+          </button>
+        </div>
+        <div style="text-align:center;font-size:11.5px;color:#B0A0A0;margin-top:4px">ou passez directement à la conversation →</div>
+      </div>
+
+      <!-- ÉTAPE 3 — Se reconstruire -->
+      <div id="par-step-3" style="display:none">
+        <div class="par-title">Votre bilan est prêt.</div>
+        <p class="par-sub">Voici ce que vos réponses révèlent. SEREINIA va maintenant ouvrir une conversation personnalisée basée sur ce que vous avez partagé.</p>
+        <div id="par-bilan-recap" style="margin-bottom:16px"></div>
+        <div style="background:white;border:1px solid rgba(168,84,112,0.12);border-radius:14px;padding:16px;font-size:12.5px;color:#6B4A4A;line-height:1.7" id="par-action-soir">
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#A85470;margin-bottom:8px">Pour ce soir</div>
+          <div id="par-action-txt">Chargement de votre recommandation...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="par-footer">
+      <button class="par-btn-skip" id="par-btn-skip" onclick="skipParcours()">Passer →</button>
+      <button class="par-btn-next" id="par-btn-next" onclick="nextParcours()" disabled>Suivant →</button>
+    </div>
+
+  </div>
+</div>
+
 <!-- ═══════════════ OVERLAY KAP IA ═══════════════ -->
 <div class="overlay" id="overlay" onclick="bgClose(event)">
   <div class="panel" id="panel">
@@ -1674,6 +1803,16 @@ if(isMSK) return "Tu es KAP IA, assistant du cabinet KAP, PEZZALI AMAR DELATORRE
 return `Tu es KAP IA — assistant de SEREINIA, module spécialisé cancer du sein du cabinet KAP,
 PEZZALI AMAR DELATORRE, kinésithérapeute D.E. avec 20 ans d'expérience spécialisée,
 Gagny et Chessy (Île-de-France).
+
+════════════════════════════════════
+ORIGINE — POURQUOI SEREINIA EXISTE
+════════════════════════════════════
+Entre les soins et la vie d'après. Les questions qui s'accumulent, les mots qui manquent, la peur qu'on n'arrive pas à nommer. Ce combat, des milliers de femmes l'ont vécu — à 25 ans, à 40 ans, à 75 ans. Chacune l'a vécu différemment. Il n'y aura jamais une bonne réponse, un bon discours face à la maladie, face à la peur, face au désespoir.
+
+SEREINIA est née de cette réalité. Pas pour remplacer les soignants. Pas pour avoir les bonnes réponses. Pour tendre la main à chaque instant du combat — après une mammographie, après une chirurgie, après deux ans de soins, ou quand on se sent encore différente d'avant. Par un témoignage, par un bilan, par une conversation — combler un doute, nommer un mal, dissiper une ignorance.
+
+RÈGLE ABSOLUE qui découle de cette origine :
+SEREINIA ne prétend jamais avoir la bonne réponse. Elle tend la main. Elle écoute avant d'informer. Elle accompagne — elle ne prescrit pas de trajectoire émotionnelle.
 
 ════════════════════════════════════
 PHILOSOPHIE FONDAMENTALE
@@ -2259,16 +2398,174 @@ function openChatWithTrace(s){
 }
 
 function openChatDirect(){
-  sit = sit || 'general';
-  hist = []; mc = 0;
-  kapTraceShown = true;
+  // Déclencher le parcours 3 étapes au lieu d'ouvrir directement le chat
+  openParcours();
+}
+
+// ══ PARCOURS 3 ÉTAPES ══
+var parcoursStep = 1;
+var parcoursAnchor = null;
+var parcoursKap = null;
+
+var PAR_STEP_LABELS = ['S\'orienter', 'Mesurer', 'Se reconstruire'];
+
+function openParcours(){
+  parcoursStep = 1;
+  parcoursAnchor = null;
+  // Reset UI
+  document.querySelectorAll('.par-anchor').forEach(function(a){ a.classList.remove('selected'); });
+  document.getElementById('par-step-1').style.display = '';
+  document.getElementById('par-step-2').style.display = 'none';
+  document.getElementById('par-step-3').style.display = 'none';
+  updateParcoursUI();
+  document.getElementById('parcours-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeParcours(){
+  document.getElementById('parcours-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function updateParcoursUI(){
+  // Dots
+  for(var i=1;i<=3;i++){
+    var d = document.getElementById('pdot-'+i);
+    if(!d) continue;
+    d.className = 'par-step-dot' + (i < parcoursStep ? ' done' : i === parcoursStep ? ' active' : '');
+  }
+  // Label
+  var lbl = document.getElementById('par-step-label');
+  if(lbl) lbl.textContent = PAR_STEP_LABELS[parcoursStep-1];
+  // Bouton next
+  var btnNext = document.getElementById('par-btn-next');
+  var btnSkip = document.getElementById('par-btn-skip');
+  if(parcoursStep === 1){
+    if(btnNext){ btnNext.textContent = 'Suivant →'; btnNext.disabled = !parcoursAnchor; }
+    if(btnSkip){ btnSkip.style.display = 'none'; }
+  } else if(parcoursStep === 2){
+    if(btnNext){ btnNext.textContent = 'Passer le bilan →'; btnNext.disabled = false; }
+    if(btnSkip){ btnSkip.style.display = 'none'; }
+  } else if(parcoursStep === 3){
+    if(btnNext){ btnNext.textContent = 'Parler avec SEREINIA →'; btnNext.disabled = false; }
+    if(btnSkip){ btnSkip.style.display = 'none'; }
+  }
+  // Scroll haut
+  var body = document.getElementById('par-body');
+  if(body) body.scrollTop = 0;
+}
+
+function selectAnchor(el){
+  document.querySelectorAll('.par-anchor').forEach(function(a){ a.classList.remove('selected'); });
+  el.classList.add('selected');
+  parcoursAnchor = el.dataset.sit;
+  sit = parcoursAnchor;
+  var btnNext = document.getElementById('par-btn-next');
+  if(btnNext) btnNext.disabled = false;
+}
+
+function nextParcours(){
+  if(parcoursStep === 1){
+    parcoursStep = 2;
+    document.getElementById('par-step-1').style.display = 'none';
+    document.getElementById('par-step-2').style.display = '';
+    updateParcoursUI();
+  } else if(parcoursStep === 2){
+    // Pas de bilan — passer directement à l'étape 3 sans score
+    parcoursStep = 3;
+    document.getElementById('par-step-2').style.display = 'none';
+    document.getElementById('par-step-3').style.display = '';
+    renderParcoursStep3(null);
+    updateParcoursUI();
+  } else if(parcoursStep === 3){
+    // Ouvrir le chat
+    launchChatFromParcours();
+  }
+}
+
+function skipParcours(){
+  launchChatFromParcours();
+}
+
+function startParcoursTrace(){
+  // Sauvegarder l'état et ouvrir le bilan
+  closeParcours();
+  openTrace();
+  // Quand le bilan sera terminé, showTraceResult() déclenchera le reste
+  window._parcoursAwaitingBilan = true;
+}
+
+function renderParcoursStep3(kap){
+  parcoursKap = kap;
+  var recap = document.getElementById('par-bilan-recap');
+  var actionTxt = document.getElementById('par-action-txt');
+  if(!recap) return;
+
+  if(kap && kap.global !== null){
+    var lbl = kapScoreLabel(kap.global);
+    var sc = lbl.color || '#A85470';
+    recap.innerHTML =
+      '<div class="par-score-reveal">' +
+        '<div class="par-score-num" style="color:white">' + kap.global + '</div>' +
+        '<div class="par-score-label">KAP Score · ' + lbl.label + '</div>' +
+      '</div>' +
+      '<div style="padding:4px 0 8px">' +
+        _parDimBar('Douleur', kap.dims.D) +
+        _parDimBar('Fonctionnalité', kap.dims.F) +
+        _parDimBar('Image de soi', kap.dims.K) +
+        _parDimBar('Fatigue', kap.dims.Fa) +
+      '</div>';
+    setTimeout(function(){
+      document.querySelectorAll('.par-dim-fill').forEach(function(el){
+        el.style.width = (el.dataset.val||0) + '%';
+      });
+    }, 150);
+    if(actionTxt) actionTxt.textContent = _parActionFromScore(kap);
+  } else {
+    recap.innerHTML =
+      '<div style="background:rgba(168,84,112,0.06);border-radius:14px;padding:18px;text-align:center;border:1px solid rgba(168,84,112,0.12)">' +
+        '<div style="font-size:28px;margin-bottom:8px">🤝</div>' +
+        '<div style="font-size:13px;color:#5A3A40;line-height:1.65">SEREINIA est prête à vous écouter.<br>Votre conversation sera personnalisée selon votre situation.</div>' +
+      '</div>';
+    if(actionTxt) actionTxt.textContent = 'Prenez le temps d\'écrire ce qui vous préoccupe le plus en ce moment — c\'est par là que SEREINIA commencera.';
+  }
+}
+
+function _parDimBar(label, val){
+  if(val === null) return '';
+  var c = val >= 70 ? '#2D6A4F' : val >= 45 ? '#A85470' : '#7A3350';
+  return '<div class="par-dim-row">' +
+    '<div class="par-dim-name">' + label + '</div>' +
+    '<div class="par-dim-bar"><div class="par-dim-fill" data-val="' + val + '" style="width:0%;background:' + c + '"></div></div>' +
+    '<div class="par-dim-val" style="color:' + c + '">' + val + '</div>' +
+  '</div>';
+}
+
+function _parActionFromScore(kap){
+  if(!kap || kap.global === null) return 'Écrivez ce qui vous préoccupe le plus — c\'est par là que SEREINIA commencera.';
+  if(kap.dims.D !== null && kap.dims.D < 40) return 'Ce soir : pendule de Codman — 2 minutes, bras libre, petits cercles. Ce mouvement passif déclenche la récupération sans effort.';
+  if(kap.dims.Fa !== null && kap.dims.Fa < 40) return 'Ce soir : 10 minutes de marche douce à l\'air libre. L\'activité physique adaptée réduit la fatigue oncologique — c\'est documenté et contre-intuitif.';
+  if(kap.dims.K !== null && kap.dims.K < 40) return 'Ce soir : devant un miroir, posez vos mains sur vos épaules. Respirez. Regardez d\'abord vos mains, pas la cicatrice. C\'est un premier pas.';
+  return 'Ce soir : notez une chose — une seule — que vous aimeriez retrouver dans 4 semaines. SEREINIA va travailler avec vous pour y arriver.';
+}
+
+function launchChatFromParcours(){
+  closeParcours();
+  // Réinitialiser le chat
+  sit = parcoursAnchor || sit || 'general';
+  hist = []; mc = 0; kapTraceShown = true;
   var msgs = document.getElementById('msgs');
   if(msgs) msgs.innerHTML = '';
   var disc = document.getElementById('disc');
   if(disc) disc.classList.remove('on');
-  var overlay = document.getElementById('overlay');
-  if(overlay){ overlay.classList.add('open'); document.body.style.overflow='hidden'; }
-  startWithSit(sit);
+  // Si bilan fait, ouvrir via openChatAfterBilan
+  if(parcoursKap){
+    openChatAfterBilan(parcoursKap);
+  } else {
+    var overlay = document.getElementById('overlay');
+    if(overlay){ overlay.classList.add('open'); document.body.style.overflow='hidden'; }
+    startWithSit(sit);
+  }
 }
 
 function renderSereniaAnalyse(data){
@@ -3482,6 +3779,23 @@ function showTraceResult(){
     localStorage.setItem('kap-last-immat', _immat);
     var numDisplay = document.getElementById('immat-display');
     if(numDisplay) numDisplay.textContent = _immat;
+
+    // Si bilan lancé depuis le parcours → retourner à l'étape 3
+    if(window._parcoursAwaitingBilan){
+      window._parcoursAwaitingBilan = false;
+      parcoursKap = kap;
+      parcoursStep = 3;
+      document.getElementById('par-step-2').style.display = 'none';
+      document.getElementById('par-step-3').style.display = '';
+      renderParcoursStep3(kap);
+      updateParcoursUI();
+      // Fermer trace-result et rouvrir le parcours
+      closeResult();
+      document.getElementById('parcours-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+
     setTimeout(function(){
       var grid = document.getElementById('prenom-grid');
       var sel  = document.getElementById('prenom-selector');
